@@ -14,7 +14,7 @@ import Layout from '@/layout'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
+ * Detail see: https://panjiachen.github.io-site/guide/essentials/router-and-nav.html
  *
  * hidden: true                   if set true, item will not show in the sidebar(default is false)
  * alwaysShow: true               if set true, will always show the root menu
@@ -104,7 +104,7 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-    {
+  {
     path: '/table',
     component: Layout,
     // redirect: '@/views/permission/complex-table',
@@ -114,7 +114,7 @@ export const asyncRoutes = [
       icon: 'table',
       roles: ['admin'] // 您可以在root导航中设置角色
     },
-    children: [   
+    children: [
       {
         path: 'role',
         component: () => import('@/views/permission/role'),
@@ -138,7 +138,7 @@ export const asyncRoutes = [
         component: () => import('@/views/permission/complex-table'),
         name: 'table',
         meta: { title: '普通表格' },
-        roles: ['admin'] 
+        roles: ['admin']
       }
     ]
   },

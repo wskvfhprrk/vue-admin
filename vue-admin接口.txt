@@ -1,0 +1,33 @@
+Request URL: http://localhost:9527/dev-api/user/login
+Request Method: POST
+rqu==
+{username: "admin", password: "111111"}
+password
+: 
+"111111"
+username
+: 
+"admin"
+res==
+{"code":20000,"data":{"token":"admin-token"}}
+cook==
+Admin-Token=admin-token
+
+
+Request URL: http://localhost:9527/dev-api/user/info?token=admin-token
+Request Method: GET
+Cookie: Admin-Token=admin-token
+X-Token: admin-token
+
+rqu==
+token: admin-token
+res==
+{"code":20000,"data":{"roles":["admin"],"introduction":"I am a super administrator","avatar":"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif","name":"Super Admin"}}
+
+Request URL: http://localhost:9527/dev-api/user/logout
+Request Method: POST
+Cookie: Admin-Token=admin-token
+X-Token: admin-token
+
+res==
+{"code":20000,"data":"success"}

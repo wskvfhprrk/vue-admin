@@ -36,16 +36,16 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    // before: require('./mock/mock-server.js')
     // 跨域——把上面mock注释了
-    // proxy: {
-    //   [process.env.VUE_APP_BASE_API]: {
-    //     target: 'http://127.0.0.1:8080/',
-    //     ws: true,
-    //     changeOrigin: true,
-    //     pathRewrite: { ['^' + process.env.VUE_APP_BASE_API]: '' }
-    //   }
-    // }
+    proxy: {
+      [process.env.VUE_APP_BASE_API]: {
+        target: 'http://127.0.0.1:8080/',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: { ['^' + process.env.VUE_APP_BASE_API]: '' }
+      }
+    }
 
   },
   configureWebpack: {
