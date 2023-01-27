@@ -1,4 +1,7 @@
 Request URL: http://localhost:9527/dev-api/user/login
+
+跨域后：http://localhost:9527/dev-api/user/login
+只要把网址换一下，后台必须带路径，否则删除development中的'/dev-api'
 Request Method: POST
 rqu==
 {username: "admin", password: "111111"}
