@@ -132,12 +132,31 @@ export const asyncRoutes = [
           title: '没有配权限'
           // 如果不设置角色，则表示:此页面不需要权限
         }
-      },
+      }
+    ]
+  },
+  {
+    path: '/dtu',
+    component: Layout,
+    name: 'Dtu',
+    meta: {
+      title: '设备参数',
+      icon: 'dtu',
+      roles: ['admin']
+    },
+    children: [
       {
         path: 'dtuInfo',
-        component: () => import('@/views/permission/dtuInfo'),
+        component: () => import('@/views/dtu/dtuInfo'),
         name: 'table',
         meta: { title: 'dtu设备' },
+        roles: ['admin']
+      },
+      {
+        path: 'checkingRules',
+        component: () => import('@/views/dtu/checkingRules'),
+        name: 'checkingRules',
+        meta: { title: '指令校验规则' },
         roles: ['admin']
       }
     ]
