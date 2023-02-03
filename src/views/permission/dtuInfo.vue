@@ -27,23 +27,15 @@
       <el-table-column label="继电器检查规则id" prop="sensorCheckingRulesIds" class-name="status-col" width="100" />
       <el-table-column label="轮询传感器数据地址位顺序" prop="sensorAddressOrder" class-name="status-col" width="200" />
       <el-table-column label="轮询间隔时间" prop="intervalTime" class-name="status-col" width="100" />
-      <el-table-column
-        label="是否自动控制"
-        prop="automaticAdjustment"
-        class-name="status-col"
-        width="100"
-        :formatter="automaticFormatter"
-      />
+      <el-table-column label="是否自动控制" prop="automaticAdjustment" class-name="status-col" width="100" :formatter="automaticFormatter" />
       <el-table-column label="心跳长度" prop="heartbeatLength" class-name="status-col" width="50" />
       <el-table-column>
         <template slot-scope="{ row, $index }">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
-          <!-- <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            Publish
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
+          <!-- <el-button v-if="row.status!='draft'" size="mini" @click="automaticAdjustmentStatus(row,'draft')">
             Draft
           </el-button> -->
+          <el-button size="mini" type="success" @click="automaticAdjustmentStatus(row)"> 修改自动控制状态 </el-button>
           <el-button v-if="row.status != 'deleted'" size="mini" type="danger" @click="handleDelete(row, $index)"> 删除
           </el-button>
         </template>
@@ -204,12 +196,11 @@ export default {
       this.getList()
     },
     // 操作状态
-    handleModifyStatus(row, status) {
+    automaticAdjustmentStatus(row, status) {
       this.$message({
         message: '操作成功',
         type: 'success'
       })
-      row.status = status
     },
     // 排序改变
     sortChange(data) {
