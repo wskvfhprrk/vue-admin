@@ -107,7 +107,7 @@ export const asyncRoutes = [
   {
     path: '/table',
     component: Layout,
-    // redirect: '@/views/permission/complex-table',
+    // redirect: '@/views/permission/dtuInfo',
     name: 'Table',
     meta: {
       title: '表格示例',
@@ -134,10 +134,10 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'complex-table',
-        component: () => import('@/views/permission/complex-table'),
+        path: 'dtuInfo',
+        component: () => import('@/views/permission/dtuInfo'),
         name: 'table',
-        meta: { title: '普通表格' },
+        meta: { title: 'dtu设备' },
         roles: ['admin']
       }
     ]

@@ -2,15 +2,15 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/article/list',
+    url: '/dtuInfo/page',
     method: 'get',
     params: query
   })
 }
 
-export function fetchArticle(id) {
+export function fetchDtuInfo(id) {
   return request({
-    url: '/article/detail',
+    url: '/dtuInfo/detail',
     method: 'get',
     params: { id }
   })
@@ -18,23 +18,23 @@ export function fetchArticle(id) {
 
 export function fetchPv(pv) {
   return request({
-    url: '/article/pv',
+    url: '/dtuInfo/pv',
     method: 'get',
     params: { pv }
   })
 }
 
-export function createArticle(data) {
+export function createDtuInfo(data) {
   return request({
-    url: '/article/create',
+    url: '/dtuInfo/create',
     method: 'post',
     data
   })
 }
 
-export function updateArticle(data) {
+export function updateDtuInfo(data) {
   return request({
-    url: '/article/update',
+    url: '/dtuInfo/update',
     method: 'post',
     data
   })
