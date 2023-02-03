@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Element Admin' // page title
+const name = defaultSettings.title || '后台管理系统' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -38,12 +38,21 @@ module.exports = {
     },
     // before: require('./mock/mock-server.js')
     // 跨域——把上面mock注释了
+    // proxy: {
+    //   [process.env.VUE_APP_BASE_API]: {
+    //     target: 'http://127.0.0.1:8080/',
+    //     ws: true,
+    //     changeOrigin: true,
+    //     pathRewrite: { ['^' + process.env.VUE_APP_BASE_API]: '' }
+    //   }
+    // }
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
         target: 'http://127.0.0.1:8080/',
-        ws: true,
         changeOrigin: true,
-        pathRewrite: { ['^' + process.env.VUE_APP_BASE_API]: '' }
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API]: ''
+        }
       }
     }
 

@@ -11,9 +11,18 @@
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter"> 查询 </el-button>
-      <el-button class="filter-item" style="margin-left: 10px" type="primary" icon="el-icon-edit" @click="handleCreate"> 新增 </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload"> 导出excel </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter"> 查询</el-button>
+      <el-button class="filter-item" style="margin-left: 10px" type="primary" icon="el-icon-edit" @click="handleCreate">
+        新增
+      </el-button>
+      <el-button
+        :loading="downloadLoading"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-download"
+        @click="handleDownload"
+      > 导出excel
+      </el-button>
     </div>
     <el-table :data="list" border>
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" />
@@ -26,20 +35,28 @@
       <el-table-column label="imei长度" prop="imeiLength" align="center" width="200" />
       <el-table-column label="指令前带imei" prop="noImei" class-name="status-col" width="100" :formatter="Ynformater" />
       <el-table-column label="注册信息bytes的长度" prop="registrationLength" class-name="status-col" width="200" />
-      <el-table-column label="继电器检查规则id" prop="relayCheckingRulesIds" class-name="status-col" width="200" />
-      <el-table-column label="一组轮询传感器数据地址顺序" prop="sensorAddressOrder" class-name="status-col" width="200" />
-      <el-table-column label="是否自动控制" prop="automaticAdjustment" class-name="status-col" width="100" :formatter="automaticFormatter" />
-      <el-table-column label="心跳长度" prop="heartbeatLength" class-name="status-col" width="100" />
+      <el-table-column label="继电器检查规则id" prop="sensorCheckingRulesIds" class-name="status-col" width="100" />
+      <el-table-column label="轮询传感器数据地址位顺序" prop="sensorAddressOrder" class-name="status-col" width="200" />
+      <el-table-column label="轮询间隔时间" prop="intervalTime" class-name="status-col" width="100" />
+      <el-table-column
+        label="是否自动控制"
+        prop="automaticAdjustment"
+        class-name="status-col"
+        width="100"
+        :formatter="automaticFormatter"
+      />
+      <el-table-column label="心跳长度" prop="heartbeatLength" class-name="status-col" width="50" />
       <el-table-column>
         <template slot-scope="{ row, $index }">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改 </el-button>
+          <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
           <!-- <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
             Publish
           </el-button>
           <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
             Draft
           </el-button> -->
-          <el-button v-if="row.status != 'deleted'" size="mini" type="danger" @click="handleDelete(row, $index)"> 删除 </el-button>
+          <el-button v-if="row.status != 'deleted'" size="mini" type="danger" @click="handleDelete(row, $index)"> 删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -47,8 +64,38 @@
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="200px" style="width: 400px; margin-left: 50px">
-        <el-form-item v-show="dialogStatus === 'update'" label="id" prop="id"> <el-input v-model="temp.id" disabled /> </el-form-item>
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="200px"
+        style="width: 400px; margin-left: 50px"
+      >
+        <el-form-item v-show="dialogStatus === 'update'" label="id" prop="id">
+          <el-input v-model="temp.id" disabled placeholder="请输入id" />
+        </el-form-item>
+        <el-form-item label="imei" prop="imei">
+          <el-input v-model="temp.imei" placeholder="请输入imei" />
+        </el-form-item>
+        <el-form-item label="imei长度" prop="imeiLength">
+          <el-input v-model="temp.imeiLength" placeholder="请输入imei长度" />
+        </el-form-item>
+        <el-form-item label="注册信息bytes的长度" prop="registrationLength">
+          <el-input v-model="temp.registrationLength" placeholder="请输入注册信息bytes的长度" />
+        </el-form-item>
+        <el-form-item label="传感器检查规则ID" prop="sensorCheckingRulesIds">
+          <el-input v-model="temp.sensorCheckingRulesIds" placeholder="请输入传感器检查规则ID" />
+        </el-form-item>
+        <el-form-item label="轮询传感器数据地址位顺序" prop="sensorAddressOrder">
+          <el-input v-model="temp.sensorAddressOrder" placeholder="请输入轮询传感器数据地址位顺序" />
+        </el-form-item>
+        <el-form-item label="心跳长度" prop="heartbeatLength">
+          <el-input v-model="temp.heartbeatLength" placeholder="请输入心跳长度" />
+        </el-form-item>
+        <el-form-item label="轮询间隔时间" prop="intervalTime">
+          <el-input v-model="temp.intervalTime" placeholder="请输入轮询间隔时间" />
+        </el-form-item>
         <el-form-item label="指令前带imei" prop="noImei">
           <el-select v-model="temp.noImei" class="filter-item" placeholder="请选择">
             <el-option v-for="item in calendarNoImeiOptions" :key="item.noImei" :label="item.display_name" :value="item.key" />
@@ -62,24 +109,6 @@
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
         </el-form-item> -->
-        <el-form-item label="imei" prop="imei">
-          <el-input v-model="temp.imei" />
-        </el-form-item>
-        <el-form-item label="传感器地址顺序" prop="sensorAddressOrder">
-          <el-input v-model="temp.sensorAddressOrder" />
-        </el-form-item>
-        <el-form-item label="imei长度" prop="imeiLength">
-          <el-input v-model="temp.imeiLength" />
-        </el-form-item>
-        <el-form-item label="注册信息bytes的长度" prop="registrationLength">
-          <el-input v-model="temp.registrationLength" />
-        </el-form-item>
-        <el-form-item label="一组轮询传感器数据地址顺序" prop="sensorAddressOrder">
-          <el-input v-model="temp.sensorAddressOrder" />
-        </el-form-item>
-        <el-form-item label="心跳长度" prop="heartbeatLength">
-          <el-input v-model="temp.heartbeatLength" />
-        </el-form-item>
         <!-- <el-form-item label="Remark">
           <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
         </el-form-item> -->
@@ -89,64 +118,26 @@
         <el-button type="primary" @click="dialogStatus === 'create' ? createData() : updateData()"> 确认 </el-button>
       </div>
     </el-dialog>
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">确认</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchList, fetchPv, createDtuInfo, updateDtuInfo } from '@/api/dtuInfo'
-// import waves from "@/directive/waves"; // 波指令
-import { parseTime } from '@/utils'
-// import Pagination from "@/components/Pagination"; // 基于el分页的二级包
+import { createDtuInfo, deleteDtuInfo, fetchList, updateDtuInfo } from '@/api/dtuInfo'
+import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 const calendarNoImeiOptions = [
   { key: 'true', display_name: '带的' },
   { key: 'false', display_name: '不带' }
 ]
 
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = calendarNoImeiOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
-
 const automaticOptions = [
   { key: 'true', display_name: '自动' },
   { key: 'false', display_name: '手动' }
 ]
 
-// arr to obj, such as { CN : "China", US : "USA" }
-// const calendarTypeKeyValue = automaticOptions.reduce((acc, cur) => {
-//   acc[cur.key] = cur.display_name;
-//   return acc;
-// }, {});
-
 export default {
   name: 'ComplexTable',
   components: { Pagination },
-  directives: { waves },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
-    }
-  },
   data() {
     return {
       tableKey: 0,
@@ -162,6 +153,7 @@ export default {
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
+      // 格式化数据
       calendarNoImeiOptions,
       automaticOptions,
       sortOptions: [
@@ -170,13 +162,6 @@ export default {
       ],
       showReviewer: false,
       temp: {
-        // id: undefined,
-        // importance: 1,
-        // remark: "",
-        // timestamp: new Date(),
-        // title: "",
-        // type: "",
-        // status: "published",
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -184,23 +169,16 @@ export default {
         update: 'Edit',
         create: 'Create'
       },
-      dialogPvVisible: false,
-      pvData: [],
       rules: {
-        type: [
-          { required: true, message: 'type is required', trigger: 'change' }
-        ],
-        timestamp: [
-          {
-            type: 'date',
-            required: true,
-            message: 'timestamp is required',
-            trigger: 'change'
-          }
-        ],
-        title: [
-          { required: true, message: 'title is required', trigger: 'blur' }
-        ]
+        imei: [{ required: true, message: 'imei是必填', trigger: 'change' }],
+        imeiLength: [{ required: true, message: 'imei长度是必填', trigger: 'change' }],
+        registrationLength: [{ required: true, message: '注册bytes长度是必填', trigger: 'change' }],
+        intervalTime: [{ required: true, message: '轮询间隔时间是必填', trigger: 'change' }],
+        sensorCheckingRulesIds: [{ required: true, message: '传感器检查规则ID是必填', trigger: 'change' }],
+        sensorAddressOrder: [{ required: true, message: '轮询传感器数据地址顺序是必填', trigger: 'change' }],
+        heartbeatLength: [{ required: true, message: '心跳bytes长度是必填', trigger: 'change' }],
+        noImei: [{ required: true, message: '指令前是否带imei值必填', trigger: 'change' }],
+        automaticAdjustment: [{ required: true, message: '是否自动控制长度是必填', trigger: 'change' }]
       },
       downloadLoading: false
     }
@@ -262,13 +240,6 @@ export default {
     // 重置表单数据
     resetTemp() {
       this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
       }
     },
     // 新建
@@ -283,17 +254,16 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
           createDtuInfo(this.temp).then(() => {
-            this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
               message: '添加成功！',
               type: 'success',
               duration: 2000
-            })
+            },
+            this.getList()
+            )
           })
         }
       })
@@ -327,55 +297,62 @@ export default {
       })
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: '删除成功！',
-        type: 'success',
-        duration: 2000
-      })
-      this.list.splice(index, 1)
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then((response) => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then((excel) => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = [
-          'timestamp',
-          'title',
-          'type',
-          'importance',
-          'status'
-        ]
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.delete(row, index)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
         })
-        this.downloadLoading = false
       })
     },
-    formatJson(filterVal) {
-      return this.list.map((v) =>
-        filterVal.map((j) => {
-          if (j === 'timestamp') {
-            return parseTime(v[j])
-          } else {
-            return v[j]
-          }
-        })
-      )
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
+    delete(row, index) {
+      deleteDtuInfo(row.id).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: '删除成功！',
+          type: 'success',
+          duration: 2000
+        },
+        this.getList()
+        )
+      })
     }
+    // handleDownload() {
+    //   this.downloadLoading = true
+    //   import('@/vendor/Export2Excel').then((excel) => {
+    //     const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+    //     const filterVal = [
+    //       'timestamp',
+    //       'title',
+    //       'type',
+    //       'importance',
+    //       'status'
+    //     ]
+    //     const data = this.formatJson(filterVal)
+    //     excel.export_json_to_excel({
+    //       header: tHeader,
+    //       data,
+    //       filename: 'table-list'
+    //     })
+    //     this.downloadLoading = false
+    //   })
+    // },
+    // formatJson(filterVal) {
+    //   return this.list.map((v) =>
+    //     filterVal.map((j) => {
+    //       if (j === 'timestamp') {
+    //         return parseTime(v[j])
+    //       } else {
+    //         return v[j]
+    //       }
+    //     })
+    //   )
+    // },
   }
 }
 </script>
