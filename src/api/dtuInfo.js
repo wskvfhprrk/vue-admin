@@ -8,11 +8,10 @@ export function fetchList(query) {
   })
 }
 
-export function fetchDtuInfo(id) {
+export function automaticAdjustment(id) {
   return request({
-    url: '/dtuInfo/detail',
-    method: 'get',
-    params: { id }
+    url: '/dtuInfo/automaticAdjustment/' + id,
+    method: 'get'
   })
 }
 

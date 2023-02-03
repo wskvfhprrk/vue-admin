@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.imei" placeholder="imei" style="width: 200px" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.imei" placeholder="imei" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select> -->
@@ -16,28 +16,25 @@
       <!-- <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" > 导出excel </el-button> -->
     </div>
     <el-table :data="list" border>
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" />
+      <el-table-column label="ID" prop="id" align="center" width="80" />
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
       <el-table-column label="imei" prop="imei" width="250px" align="center" />
-      <el-table-column label="imei长度" prop="imeiLength" align="center" width="200" />
-      <el-table-column label="指令前带imei" prop="noImei" class-name="status-col" width="100" :formatter="Ynformater" />
-      <el-table-column label="注册信息bytes的长度" prop="registrationLength" class-name="status-col" width="200" />
-      <el-table-column label="继电器检查规则id" prop="sensorCheckingRulesIds" class-name="status-col" width="100" />
-      <el-table-column label="轮询传感器数据地址位顺序" prop="sensorAddressOrder" class-name="status-col" width="200" />
-      <el-table-column label="轮询间隔时间" prop="intervalTime" class-name="status-col" width="100" />
-      <el-table-column label="是否自动控制" prop="automaticAdjustment" class-name="status-col" width="100" :formatter="automaticFormatter" />
-      <el-table-column label="心跳长度" prop="heartbeatLength" class-name="status-col" width="50" />
+      <el-table-column label="imei长度" prop="imeiLength" align="center" width="100" />
+      <el-table-column label="指令前带imei" prop="noImei" width="100" :formatter="Ynformater" />
+      <el-table-column label="注册信息bytes的长度" prop="registrationLength" width="80" />
+      <el-table-column label="继电器检查规则id" prop="sensorCheckingRulesIds" width="100" />
+      <el-table-column label="轮询传感器数据地址位顺序" prop="sensorAddressOrder" width="100" />
+      <el-table-column label="轮询间隔时间" prop="intervalTime" width="100" />
+      <el-table-column label="是否自动控制" prop="automaticAdjustment" width="100" :formatter="automaticFormatter" />
+      <el-table-column label="心跳长度" prop="heartbeatLength" width="50" />
       <el-table-column>
-        <template slot-scope="{ row, $index }">
+        <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
-          <!-- <el-button v-if="row.status!='draft'" size="mini" @click="automaticAdjustmentStatus(row,'draft')">
-            Draft
-          </el-button> -->
-          <el-button size="mini" type="success" @click="automaticAdjustmentStatus(row)"> 修改自动控制状态 </el-button>
-          <el-button v-if="row.status != 'deleted'" size="mini" type="danger" @click="handleDelete(row, $index)"> 删除
-          </el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(row)"> 删除</el-button>
+          <el-button size="mini" type="success" @click="automaticAdjustmentStatus(row)"> 修改自动控制状态</el-button>
+          <!-- <el-button v-if="row.status!='draft'" size="mini" @click="automaticAdjustmentStatus(row,'draft')"> Draft </el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -103,14 +100,13 @@
 </template>
 
 <script>
-import { createDtuInfo, deleteDtuInfo, fetchList, updateDtuInfo } from '@/api/dtuInfo'
+import { automaticAdjustment, createDtuInfo, deleteDtuInfo, fetchList, updateDtuInfo } from '@/api/dtuInfo'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 const calendarNoImeiOptions = [
   { key: 'true', display_name: '带的' },
   { key: 'false', display_name: '不带' }
 ]
-
 const automaticOptions = [
   { key: 'true', display_name: '自动' },
   { key: 'false', display_name: '手动' }
@@ -128,9 +124,8 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
+        imei: undefined,
+        noImei: undefined,
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
@@ -177,7 +172,7 @@ export default {
       }
     },
     automaticFormatter(row, column) {
-      if (row.noImei) {
+      if (row.automaticAdjustment) {
         return '自动'
       } else {
         return '手动'
@@ -197,9 +192,16 @@ export default {
     },
     // 操作状态
     automaticAdjustmentStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
+      automaticAdjustment(row.id).then(() => {
+        this.dialogFormVisible = false
+        this.$notify({
+          title: 'Success',
+          message: '操作状态修改成功！',
+          type: 'success',
+          duration: 2000
+        },
+        this.getList()
+        )
       })
     },
     // 排序改变
@@ -271,18 +273,20 @@ export default {
               message: '修改成功！',
               type: 'success',
               duration: 2000
-            })
+            },
+            this.getList()
+            )
           })
         }
       })
     },
-    handleDelete(row, index) {
+    handleDelete(row) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.delete(row, index)
+        this.delete(row)
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -290,7 +294,7 @@ export default {
         })
       })
     },
-    delete(row, index) {
+    delete(row) {
       deleteDtuInfo(row.id).then(() => {
         this.$notify({
           title: 'Success',
