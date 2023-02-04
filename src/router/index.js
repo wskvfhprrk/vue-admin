@@ -158,6 +158,13 @@ export const asyncRoutes = [
         name: 'checkingRules',
         meta: { title: '指令校验规则' },
         roles: ['admin']
+      },
+      {
+        path: 'relay',
+        component: () => import('@/views/dtu/checkingRules'),
+        name: 'relay',
+        meta: { title: '继电器设备' },
+        roles: ['admin']
       }
     ]
   },
