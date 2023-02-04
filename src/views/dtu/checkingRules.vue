@@ -41,14 +41,6 @@
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <!--      private Integer id;
-      private String name;
-      private Integer commonLength;
-      private Integer AddressBitLength;
-      private Integer functionCodeLength;
-      private Integer DataBitsLength;
-      private Integer DataValueLength;
-      private Integer crc16CheckDigitLength;-->
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="200px" style="width: 400px; margin-left: 50px">
         <el-form-item v-show="dialogStatus === 'update'" label="id" prop="id">
           <el-input v-model="temp.id" disabled placeholder="请输入id" />
@@ -127,8 +119,7 @@ export default {
         { label: 'ID 倒序排列', key: '-id' }
       ],
       showReviewer: false,
-      temp: {
-      },
+      temp: {},
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -136,15 +127,13 @@ export default {
         create: 'Create'
       },
       rules: {
-        imei: [{ required: true, message: 'imei是必填', trigger: 'change' }],
-        imeiLength: [{ required: true, message: 'imei长度是必填', trigger: 'change' }],
-        registrationLength: [{ required: true, message: '注册bytes长度是必填', trigger: 'change' }],
-        intervalTime: [{ required: true, message: '轮询间隔时间是必填', trigger: 'change' }],
-        sensorCheckingRulesIds: [{ required: true, message: '传感器检查规则ID是必填', trigger: 'change' }],
-        sensorAddressOrder: [{ required: true, message: '轮询传感器数据地址顺序是必填', trigger: 'change' }],
-        heartbeatLength: [{ required: true, message: '心跳bytes长度是必填', trigger: 'change' }],
-        noImei: [{ required: true, message: '指令前是否带imei值必填', trigger: 'change' }],
-        automaticAdjustment: [{ required: true, message: '是否自动控制长度是必填', trigger: 'change' }]
+        name: [{ required: true, message: '名称是必填', trigger: 'change' }],
+        commonLength: [{ required: true, message: '总长度是必填', trigger: 'change' }],
+        addressBitLength: [{ required: true, message: '地址位长度是必填', trigger: 'change' }],
+        functionCodeLength: [{ required: true, message: '功码长度是必填', trigger: 'change' }],
+        dataBitsLength: [{ required: true, message: '数据位长度是必填', trigger: 'change' }],
+        dataValueLength: [{ required: true, message: '数据值长度是必填', trigger: 'change' }],
+        crc16CheckDigitLength: [{ required: true, message: 'crc16校验位长度是必填', trigger: 'change' }]
       },
       downloadLoading: false
     }
@@ -214,6 +203,18 @@ export default {
       this.temp = {
       }
     },
+    // 校验数据
+    calibrationData() {
+      if (this.temp.commonLength === (Number(this.temp.addressBitLength) + Number(this.temp.functionCodeLength) + Number(this.temp.dataBitsLength) + Number(this.temp.dataValueLength) + Number(this.temp.crc16CheckDigitLength))) {
+        return true
+      } else {
+        this.$message({
+          type: 'error',
+          message: '总长度应该等于其它几个长度之和！'
+        })
+        return false
+      }
+    },
     // 新建
     handleCreate() {
       this.resetTemp()
@@ -226,6 +227,9 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          if (!this.calibrationData()) {
+            return
+          }
           createCheckingRules(this.temp).then(() => {
             this.dialogFormVisible = false
             this.$notify({
@@ -252,6 +256,9 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          if (!this.calibrationData()) {
+            return
+          }
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           updateCheckingRules(tempData).then(() => {

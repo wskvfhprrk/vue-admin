@@ -54,13 +54,13 @@
           <el-input v-model="temp.id" disabled placeholder="请输入id" />
         </el-form-item>
         <el-form-item label="imei" prop="imei">
-          <el-input v-model="temp.imei" placeholder="请输入imei" />
+          <el-input v-model="temp.imei" type="number" placeholder="请输入imei" />
         </el-form-item>
         <el-form-item label="imei长度" prop="imeiLength">
-          <el-input v-model="temp.imeiLength" placeholder="请输入imei长度" />
+          <el-input v-model="temp.imeiLength" type="number" placeholder="请输入imei长度" />
         </el-form-item>
         <el-form-item label="注册信息bytes的长度" prop="registrationLength">
-          <el-input v-model="temp.registrationLength" placeholder="请输入注册信息bytes的长度" />
+          <el-input v-model="temp.registrationLength" type="number" placeholder="请输入注册信息bytes的长度" />
         </el-form-item>
         <el-form-item label="传感器检查规则ID" prop="sensorCheckingRulesIds">
           <el-input v-model="temp.sensorCheckingRulesIds" placeholder="请输入传感器检查规则ID" />
@@ -68,11 +68,11 @@
         <el-form-item label="轮询传感器数据地址位顺序" prop="sensorAddressOrder">
           <el-input v-model="temp.sensorAddressOrder" placeholder="请输入轮询传感器数据地址位顺序" />
         </el-form-item>
-        <el-form-item label="心跳长度" prop="heartbeatLength">
+        <el-form-item type="number" label="心跳长度" prop="heartbeatLength">
           <el-input v-model="temp.heartbeatLength" placeholder="请输入心跳长度" />
         </el-form-item>
-        <el-form-item label="轮询间隔时间" prop="intervalTime">
-          <el-input v-model="temp.intervalTime" placeholder="请输入轮询间隔时间" />
+        <el-form-item type="number" label="轮询间隔时间" prop="intervalTime">
+          <el-input v-model="temp.intervalTime" placeholder="请输入轮询间隔时间"><template slot="append">毫秒</template></el-input>
         </el-form-item>
         <el-form-item label="指令前带imei" prop="noImei">
           <el-select v-model="temp.noImei" class="filter-item" placeholder="请选择">
@@ -146,15 +146,15 @@ export default {
         create: 'Create'
       },
       rules: {
-        imei: [{ required: true, message: 'imei是必填', trigger: 'change' }],
-        imeiLength: [{ required: true, message: 'imei长度是必填', trigger: 'change' }],
-        registrationLength: [{ required: true, message: '注册bytes长度是必填', trigger: 'change' }],
-        intervalTime: [{ required: true, message: '轮询间隔时间是必填', trigger: 'change' }],
-        sensorCheckingRulesIds: [{ required: true, message: '传感器检查规则ID是必填', trigger: 'change' }],
-        sensorAddressOrder: [{ required: true, message: '轮询传感器数据地址顺序是必填', trigger: 'change' }],
-        heartbeatLength: [{ required: true, message: '心跳bytes长度是必填', trigger: 'change' }],
-        noImei: [{ required: true, message: '指令前是否带imei值必填', trigger: 'change' }],
-        automaticAdjustment: [{ required: true, message: '是否自动控制长度是必填', trigger: 'change' }]
+        imei: [{ required: true, message: 'imei是必填', trigger: 'blur' }],
+        imeiLength: [{ required: true, message: 'imei长度是必填', trigger: 'blur' }],
+        registrationLength: [{ required: true, message: '注册bytes长度是必填', trigger: 'blur' }],
+        intervalTime: [{ required: true, message: '轮询间隔时间是必填', trigger: 'blur' }],
+        sensorCheckingRulesIds: [{ required: true, message: '传感器检查规则ID是必填', trigger: 'blur' }],
+        sensorAddressOrder: [{ required: true, message: '轮询传感器数据地址顺序是必填', trigger: 'blur' }],
+        heartbeatLength: [{ required: true, message: '心跳bytes长度是必填', trigger: 'blur' }],
+        noImei: [{ required: true, message: '指令前是否带imei值必填', trigger: 'blur' }],
+        automaticAdjustment: [{ required: true, message: '是否自动控制长度是必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
