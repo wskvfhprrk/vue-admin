@@ -1,14 +1,19 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input v-model="listQuery.adrss" placeholder="感应器编号地址——发出接收时指令地址位（每个感应器都有一个地址位的）" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.closeHex" placeholder="关联关闭命令发出的指令" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.dtuId" placeholder="dtuId" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.name" placeholder="名称" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.commonLength" placeholder="地址位长度" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.opneHex" placeholder="关联打开命令发出的指令" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.remark" placeholder="备注信息" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.url" placeholder="关联发出的链接" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
-      </el-select> -->
-      <!-- <el-select v-model="listQuery.commonLength" placeholder="地址位长度" clearable class="filter-item" style="width: 130px">
+      </el-select>
+      <el-select v-model="listQuery.noImei" placeholder="指令前带imei" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in calendarNoImeiOptions" :key="item.key" :label="item.noImei_name" :value="item.key" />
-      </el-select> -->
+      </el-select>-->
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
@@ -21,13 +26,13 @@
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
-      <el-table-column label="名称" prop="name" width="250px" align="center" />
-      <el-table-column label="总长度" prop="commonLength" align="center" width="100" />
-      <el-table-column label="地址位长度" prop="addressBitLength" width="100" />
-      <el-table-column label="功能码长度" prop="functionCodeLength" width="100" />
-      <el-table-column label="数据位长度" prop="dataBitsLength" width="100" />
-      <el-table-column label="数据值长度" prop="dataValueLength" width="100" />
-      <el-table-column label="crc16校验位长度" prop="crc16CheckDigitLength" width="100" />
+      <el-table-column label="感应器编号地址——发出接收时指令地址位（每个感应器都有一个地址位的）" prop="adrss" width="200px" align="center" />
+      <el-table-column label="关联关闭命令发出的指令" prop="closeHex" width="200px" align="center" />
+      <el-table-column label="dtuId" prop="dtuId" width="200px" align="center" />
+      <el-table-column label="名称" prop="name" width="200px" align="center" />
+      <el-table-column label="关联打开命令发出的指令" prop="opneHex" width="200px" align="center" />
+      <el-table-column label="备注信息" prop="remark" width="200px" align="center" />
+      <el-table-column label="关联发出的链接" prop="url" width="200px" align="center" />
       <el-table-column>
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
@@ -42,29 +47,29 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="200px" style="width: 400px; margin-left: 50px">
-        <el-form-item v-show="dialogStatus === 'update'" label="id" prop="id">
-          <el-input v-model="temp.id" disabled placeholder="请输入id" />
+        <el-form-item v-show="dialogStatus === 'update'" label="ID" prop="id">
+          <el-input v-model="temp.id" disabled placeholder="请输入ID" />
+        </el-form-item>
+        <el-form-item label="感应器编号地址——发出接收时指令地址位（每个感应器都有一个地址位的）" prop="adrss">
+          <el-input v-model="temp.adrss" placeholder="请输入感应器编号地址——发出接收时指令地址位（每个感应器都有一个地址位的）" />
+        </el-form-item>
+        <el-form-item label="关联关闭命令发出的指令" prop="closeHex">
+          <el-input v-model="temp.closeHex" placeholder="请输入关联关闭命令发出的指令" />
+        </el-form-item>
+        <el-form-item label="dtuId" prop="dtuId">
+          <el-input v-model="temp.dtuId" placeholder="请输入dtuId" />
         </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name" placeholder="请输入名称" />
         </el-form-item>
-        <el-form-item label="总长度" prop="commonLength">
-          <el-input v-model="temp.commonLength" placeholder="请输入总长度" />
+        <el-form-item label="关联打开命令发出的指令" prop="opneHex">
+          <el-input v-model="temp.opneHex" placeholder="请输入关联打开命令发出的指令" />
         </el-form-item>
-        <el-form-item label="地址位长度" prop="addressBitLength">
-          <el-input v-model="temp.addressBitLength" placeholder="请输入地址位长度" />
+        <el-form-item label="备注信息" prop="remark">
+          <el-input v-model="temp.remark" placeholder="请输入备注信息" />
         </el-form-item>
-        <el-form-item label="功能码长度" prop="functionCodeLength">
-          <el-input v-model="temp.functionCodeLength" placeholder="请输入功能码长度" />
-        </el-form-item>
-        <el-form-item label="数据位长度" prop="dataBitsLength">
-          <el-input v-model="temp.dataBitsLength" placeholder="请输入数据位长度" />
-        </el-form-item>
-        <el-form-item label="数据值长度" prop="dataValueLength">
-          <el-input v-model="temp.dataValueLength" placeholder="请输入数据值长度" />
-        </el-form-item>
-        <el-form-item label="crc16校验位长度" prop="crc16CheckDigitLength">
-          <el-input v-model="temp.crc16CheckDigitLength" placeholder="请输入crc16校验位长度" />
+        <el-form-item label="关联发出的链接" prop="url">
+          <el-input v-model="temp.url" placeholder="请输入关联发出的链接" />
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -82,17 +87,17 @@
 </template>
 
 <script>
-import { createCheckingRules, deleteCheckingRules, fetchList, updateCheckingRules } from '@/api/checkingRules'
+import { createRelay, deleteRelay, fetchList, updateRelay } from '@/api/relay'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
-const calendarNoImeiOptions = [
-  { key: 'true', display_name: '带的' },
-  { key: 'false', display_name: '不带' }
-]
-const automaticOptions = [
-  { key: 'true', display_name: '自动' },
-  { key: 'false', display_name: '手动' }
-]
+// const calendarNoImeiOptions = [
+//   { key: 'true', display_name: '带的' },
+//   { key: 'false', display_name: '不带' }
+// ]
+// const automaticOptions = [
+//   { key: 'true', display_name: '自动' },
+//   { key: 'false', display_name: '手动' }
+// ]
 
 export default {
   name: 'ComplexTable',
@@ -106,20 +111,26 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        imei: undefined,
-        noImei: undefined,
+        adrss: undefined,
+        closeHex: undefined,
+        dtuId: undefined,
+        name: undefined,
+        opneHex: undefined,
+        remark: undefined,
+        url: undefined,
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
       // 格式化数据
-      calendarNoImeiOptions,
-      automaticOptions,
+      // calendarNoImeiOptions,
+      // automaticOptions,
       sortOptions: [
         { label: 'ID 顺序排列', key: '+id' },
         { label: 'ID 倒序排列', key: '-id' }
       ],
       showReviewer: false,
-      temp: {},
+      temp: {
+      },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -127,13 +138,13 @@ export default {
         create: 'Create'
       },
       rules: {
-        name: [{ required: true, message: '名称是必填', trigger: 'change' }],
-        commonLength: [{ required: true, message: '总长度是必填', trigger: 'change' }],
-        addressBitLength: [{ required: true, message: '地址位长度是必填', trigger: 'change' }],
-        functionCodeLength: [{ required: true, message: '功码长度是必填', trigger: 'change' }],
-        dataBitsLength: [{ required: true, message: '数据位长度是必填', trigger: 'change' }],
-        dataValueLength: [{ required: true, message: '数据值长度是必填', trigger: 'change' }],
-        crc16CheckDigitLength: [{ required: true, message: 'crc16校验位长度是必填', trigger: 'change' }]
+        adrss: [{ required: true, message: '感应器编号地址——发出接收时指令地址位（每个感应器都有一个地址位的）是必填', trigger: 'blur' }],
+        closeHex: [{ required: true, message: '关联关闭命令发出的指令是必填', trigger: 'blur' }],
+        dtuId: [{ required: true, message: 'dtuId是必填', trigger: 'blur' }],
+        name: [{ required: true, message: '名称是必填', trigger: 'blur' }],
+        opneHex: [{ required: true, message: '关联打开命令发出的指令是必填', trigger: 'blur' }],
+        remark: [{ required: true, message: '备注信息是必填', trigger: 'blur' }],
+        url: [{ required: true, message: '关联发出的链接是必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -183,18 +194,6 @@ export default {
       this.temp = {
       }
     },
-    // 校验数据
-    calibrationData() {
-      if (this.temp.commonLength === (Number(this.temp.addressBitLength) + Number(this.temp.functionCodeLength) + Number(this.temp.dataBitsLength) + Number(this.temp.dataValueLength) + Number(this.temp.crc16CheckDigitLength))) {
-        return true
-      } else {
-        this.$message({
-          type: 'error',
-          message: '总长度应该等于其它几个长度之和！'
-        })
-        return false
-      }
-    },
     // 新建
     handleCreate() {
       this.resetTemp()
@@ -207,10 +206,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          if (!this.calibrationData()) {
-            return
-          }
-          createCheckingRules(this.temp).then(() => {
+          createRelay(this.temp).then(() => {
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -236,12 +232,9 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          if (!this.calibrationData()) {
-            return
-          }
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateCheckingRules(tempData).then(() => {
+          updateRelay(tempData).then(() => {
             const index = this.list.findIndex((v) => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -272,7 +265,7 @@ export default {
       })
     },
     delete(row) {
-      deleteCheckingRules(row.id).then(() => {
+      deleteRelay(row.id).then(() => {
         this.$notify({
           title: 'Success',
           message: '删除成功！',
@@ -283,37 +276,6 @@ export default {
         )
       })
     }
-    // handleDownload() {
-    //   this.downloadLoading = true
-    //   import('@/vendor/Export2Excel').then((excel) => {
-    //     const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-    //     const filterVal = [
-    //       'timestamp',
-    //       'title',
-    //       'type',
-    //       'importance',
-    //       'status'
-    //     ]
-    //     const data = this.formatJson(filterVal)
-    //     excel.export_json_to_excel({
-    //       header: tHeader,
-    //       data,
-    //       filename: 'table-list'
-    //     })
-    //     this.downloadLoading = false
-    //   })
-    // },
-    // formatJson(filterVal) {
-    //   return this.list.map((v) =>
-    //     filterVal.map((j) => {
-    //       if (j === 'timestamp') {
-    //         return parseTime(v[j])
-    //       } else {
-    //         return v[j]
-    //       }
-    //     })
-    //   )
-    // },
   }
 }
 </script>
