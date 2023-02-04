@@ -2,31 +2,31 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/checkingRules/findPage',
+    url: '/sensor/findPage',
     method: 'get',
     params: query
   })
 }
 
-export function createCheckingRules(data) {
+export function createSensor(data) {
   return request({
-    url: '/checkingRules',
+    url: '/sensor',
     method: 'post',
     data
   })
 }
 
-export function updateCheckingRules(data) {
+export function updateSensor(data) {
   return request({
-    url: '/checkingRules',
+    url: '/sensor',
     method: 'put',
     data
   })
 }
 
-export function deleteCheckingRules(id) {
+export function deleteSensor(id) {
   return request({
-    url: '/checkingRules/' + id,
+    url: '/sensor/' + id,
     method: 'delete'
   })
 }

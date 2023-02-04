@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/dtuInfo/page',
+    url: '/dtuInfo/findPage',
     method: 'get',
     params: query
   })

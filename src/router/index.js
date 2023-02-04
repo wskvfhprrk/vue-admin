@@ -161,10 +161,36 @@ export const asyncRoutes = [
       },
       {
         path: 'relay',
-        component: () => import('@/views/dtu/checkingRules'),
+        component: () => import('@/views/dtu/relay'),
         name: 'relay',
         meta: { title: '继电器设备' },
         roles: ['admin']
+      },
+      {
+        path: 'CommandStatus',
+        component: () => import('@/views/dtu/commandStatus'),
+        name: 'CommandStatus',
+        meta: { title: '命令状态' },
+        roles: ['admin']
+      },
+      {
+        path: 'sensor',
+        component: () => import('@/views/dtu/sensor'),
+        name: 'sensor',
+        meta: { title: '感应器' },
+        roles: ['admin']
+      }, {
+        path: 'relayDefinitionCommand',
+        component: () => import('@/views/dtu/relayDefinitionCommand'),
+        name: 'relayDefinitionCommand',
+        meta: { title: '继电器定义指令' },
+        roles: ['admin', 'relayDefinitionCommand']
+      }, {
+        path: 'sensorData',
+        component: () => import('@/views/dtu/sensorData'),
+        name: 'sensorData',
+        meta: { title: '传感器数据' },
+        roles: ['admin', 'sensorData']
       }
     ]
   },

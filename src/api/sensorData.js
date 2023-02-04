@@ -2,31 +2,31 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/checkingRules/findPage',
+    url: '/densorDataDb/findPage',
     method: 'get',
     params: query
   })
 }
 
-export function createCheckingRules(data) {
+export function createSensorData(data) {
   return request({
-    url: '/checkingRules',
+    url: '/densorDataDb',
     method: 'post',
     data
   })
 }
 
-export function updateCheckingRules(data) {
+export function updateSensorData(data) {
   return request({
-    url: '/checkingRules',
+    url: '/densorDataDb',
     method: 'put',
     data
   })
 }
 
-export function deleteCheckingRules(id) {
+export function deleteSensorData(id) {
   return request({
-    url: '/checkingRules/' + id,
+    url: '/densorDataDb/' + id,
     method: 'delete'
   })
 }
