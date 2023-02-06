@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { createRelayDefinitionCommand, deleteRelayDefinitionCommand, fetchList, updateRelayDefinitionCommand } from '@/api/relayDefinitionCommand'
+import { createRelayDefinitionCommand, deleteRelayDefinitionCommand, fetchList, updateRelayDefinitionCommand } from '@/api/instructionDefinition'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 // const calendarNoImeiOptions = [
