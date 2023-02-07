@@ -1,12 +1,15 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.automaticAdjustment" placeholder="是否自动控制——true是自动false是手动控制" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.imei" placeholder="imei" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.intervalTime" placeholder="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.registrationLength" placeholder="dtu注册信息的长度" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.sensorAddressOrder" placeholder="感应器地址顺序" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.userId" placeholder="" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.hidden" placeholder="是否隐藏——true隐藏，false不隐藏（默认）" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.icon" placeholder="图标" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="路由器的名字" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.orderByNo" placeholder="排序编号" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.parentId" placeholder="父级Id" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.path" placeholder="路径" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.title" placeholder="标题" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.type" placeholder="类型——1父级菜单、2子菜单、3按纽" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.url" placeholder="连接" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select>
@@ -21,16 +24,19 @@
       <!-- <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" > 导出excel </el-button> -->
     </div>
     <el-table :data="list" border>
-      <el-table-column label="ID" prop="id" align="center" width="80" />
+      <el-table-column label="菜单ID" prop="id" align="center" width="80" />
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
-      <el-table-column label="是否自动控制——true是自动false是手动控制" prop="automaticAdjustment" width="100px" align="center" />
-      <el-table-column label="imei" prop="imei" width="100px" align="center" />
-      <el-table-column label="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" prop="intervalTime" width="100px" align="center" />
-      <el-table-column label="dtu注册信息的长度" prop="registrationLength" width="100px" align="center" />
-      <el-table-column label="感应器地址顺序" prop="sensorAddressOrder" width="100px" align="center" />
-      <el-table-column label="" prop="userId" width="100px" align="center" />
+      <el-table-column label="是否隐藏——true隐藏，false不隐藏（默认）" prop="hidden" width="100px" align="center" />
+      <el-table-column label="图标" prop="icon" width="100px" align="center" />
+      <el-table-column label="路由器的名字" prop="name" width="100px" align="center" />
+      <el-table-column label="排序编号" prop="orderByNo" width="100px" align="center" />
+      <el-table-column label="父级Id" prop="parentId" width="100px" align="center" />
+      <el-table-column label="路径" prop="path" width="100px" align="center" />
+      <el-table-column label="标题" prop="title" width="100px" align="center" />
+      <el-table-column label="类型——1父级菜单、2子菜单、3按纽" prop="type" width="100px" align="center" />
+      <el-table-column label="连接" prop="url" width="100px" align="center" />
       <el-table-column>
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
@@ -45,26 +51,35 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="200px" style="width: 400px; margin-left: 50px">
-        <el-form-item v-show="dialogStatus === 'update'" label="ID" prop="id">
-          <el-input v-model="temp.id" disabled placeholder="请输入ID" />
+        <el-form-item v-show="dialogStatus === 'update'" label="菜单ID" prop="id">
+          <el-input v-model="temp.id" disabled placeholder="请输入菜单ID" />
         </el-form-item>
-        <el-form-item label="是否自动控制——true是自动false是手动控制" prop="automaticAdjustment">
-          <el-input v-model="temp.automaticAdjustment" placeholder="请输入是否自动控制——true是自动false是手动控制" />
+        <el-form-item label="是否隐藏——true隐藏，false不隐藏（默认）" prop="hidden">
+          <el-input v-model="temp.hidden" placeholder="请输入是否隐藏——true隐藏，false不隐藏（默认）" />
         </el-form-item>
-        <el-form-item label="imei" prop="imei">
-          <el-input v-model="temp.imei" placeholder="请输入imei" />
+        <el-form-item label="图标" prop="icon">
+          <el-input v-model="temp.icon" placeholder="请输入图标" />
         </el-form-item>
-        <el-form-item label="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" prop="intervalTime">
-          <el-input v-model="temp.intervalTime" type="number" placeholder="请输入每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" />
+        <el-form-item label="路由器的名字" prop="name">
+          <el-input v-model="temp.name" placeholder="请输入路由器的名字" />
         </el-form-item>
-        <el-form-item label="dtu注册信息的长度" prop="registrationLength">
-          <el-input v-model="temp.registrationLength" type="number" placeholder="请输入dtu注册信息的长度" />
+        <el-form-item label="排序编号" prop="orderByNo">
+          <el-input v-model="temp.orderByNo" type="number" placeholder="请输入排序编号" />
         </el-form-item>
-        <el-form-item label="感应器地址顺序" prop="sensorAddressOrder">
-          <el-input v-model="temp.sensorAddressOrder" placeholder="请输入感应器地址顺序" />
+        <el-form-item label="父级Id" prop="parentId">
+          <el-input v-model="temp.parentId" type="number" placeholder="请输入父级Id" />
         </el-form-item>
-        <el-form-item label="" prop="userId">
-          <el-input v-model="temp.userId" type="number" placeholder="请输入" />
+        <el-form-item label="路径" prop="path">
+          <el-input v-model="temp.path" placeholder="请输入路径" />
+        </el-form-item>
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="temp.title" placeholder="请输入标题" />
+        </el-form-item>
+        <el-form-item label="类型——1父级菜单、2子菜单、3按纽" prop="type">
+          <el-input v-model="temp.type" type="number" placeholder="请输入类型——1父级菜单、2子菜单、3按纽" />
+        </el-form-item>
+        <el-form-item label="连接" prop="url">
+          <el-input v-model="temp.url" placeholder="请输入连接" />
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -82,7 +97,7 @@
 </template>
 
 <script>
-import { createDtuInfo, deleteDtuInfo, fetchList, updateDtuInfo } from '@/api/dtuInfo'
+import { createMenu, deleteMenu, fetchList, updateMenu } from '@/api/menu'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 // const calendarNoImeiOptions = [
@@ -106,12 +121,15 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        automaticAdjustment: undefined,
-        imei: undefined,
-        intervalTime: undefined,
-        registrationLength: undefined,
-        sensorAddressOrder: undefined,
-        userId: undefined,
+        hidden: undefined,
+        icon: undefined,
+        name: undefined,
+        orderByNo: undefined,
+        parentId: undefined,
+        path: undefined,
+        title: undefined,
+        type: undefined,
+        url: undefined,
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
@@ -132,12 +150,15 @@ export default {
         create: 'Create'
       },
       rules: {
-        automaticAdjustment: [{ required: true, message: '是否自动控制——true是自动false是手动控制是必填', trigger: 'blur' }],
-        imei: [{ required: true, message: 'imei是必填', trigger: 'blur' }],
-        intervalTime: [{ required: true, message: '每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致是必填', trigger: 'blur' }],
-        registrationLength: [{ required: true, message: 'dtu注册信息的长度是必填', trigger: 'blur' }],
-        sensorAddressOrder: [{ required: true, message: '感应器地址顺序是必填', trigger: 'blur' }],
-        userId: [{ required: true, message: '是必填', trigger: 'blur' }]
+        hidden: [{ required: true, message: '是否隐藏——true隐藏，false不隐藏（默认）是必填', trigger: 'blur' }],
+        icon: [{ required: true, message: '图标是必填', trigger: 'blur' }],
+        name: [{ required: true, message: '路由器的名字是必填', trigger: 'blur' }],
+        orderByNo: [{ required: true, message: '排序编号是必填', trigger: 'blur' }],
+        parentId: [{ required: true, message: '父级Id是必填', trigger: 'blur' }],
+        path: [{ required: true, message: '路径是必填', trigger: 'blur' }],
+        title: [{ required: true, message: '标题是必填', trigger: 'blur' }],
+        type: [{ required: true, message: '类型——1父级菜单、2子菜单、3按纽是必填', trigger: 'blur' }],
+        url: [{ required: true, message: '连接是必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -199,7 +220,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createDtuInfo(this.temp).then(() => {
+          createMenu(this.temp).then(() => {
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -227,7 +248,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateDtuInfo(tempData).then(() => {
+          updateMenu(tempData).then(() => {
             const index = this.list.findIndex((v) => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -258,7 +279,7 @@ export default {
       })
     },
     delete(row) {
-      deleteDtuInfo(row.id).then(() => {
+      deleteMenu(row.id).then(() => {
         this.$notify({
           title: 'Success',
           message: '删除成功！',

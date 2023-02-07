@@ -2,31 +2,31 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/dtuInfo/findPage',
+    url: '/menu/findPage',
     method: 'get',
     params: query
   })
 }
 
-export function createDtuInfo(data) {
+export function createMenu(data) {
   return request({
-    url: '/dtuInfo',
+    url: '/menu',
     method: 'post',
     data
   })
 }
 
-export function updateDtuInfo(data) {
+export function updateMenu(data) {
   return request({
-    url: '/dtuInfo',
+    url: '/menu',
     method: 'put',
     data
   })
 }
 
-export function deleteDtuInfo(id) {
+export function deleteMenu(id) {
   return request({
-    url: '/dtuInfo/' + id,
+    url: '/menu/' + id,
     method: 'delete'
   })
 }

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/densorDataDb/findPage',
+    url: '/sensorData/findPage',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function createSensorData(data) {
   return request({
-    url: '/densorDataDb',
+    url: '/sensorData',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function createSensorData(data) {
 
 export function updateSensorData(data) {
   return request({
-    url: '/densorDataDb',
+    url: '/sensorData',
     method: 'put',
     data
   })
@@ -26,7 +26,7 @@ export function updateSensorData(data) {
 
 export function deleteSensorData(id) {
   return request({
-    url: '/densorDataDb/' + id,
+    url: '/sensorData/' + id,
     method: 'delete'
   })
 }

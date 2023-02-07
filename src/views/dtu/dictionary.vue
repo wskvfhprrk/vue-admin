@@ -1,12 +1,19 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.automaticAdjustment" placeholder="是否自动控制——true是自动false是手动控制" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.imei" placeholder="imei" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.intervalTime" placeholder="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.registrationLength" placeholder="dtu注册信息的长度" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.sensorAddressOrder" placeholder="感应器地址顺序" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.userId" placeholder="" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.appModule" placeholder="应用模块" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.createTime" placeholder="创建时间" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.description" placeholder="描述说明" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.extdata" placeholder="扩展JSON" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.isDeletable" placeholder="是否可删" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.isDeleted" placeholder="删除标记" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.isEditable" placeholder="是否可改" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.itemName" placeholder="显示名" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.itemValue" placeholder="存储值" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.sortId" placeholder="排序号" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.tenantId" placeholder="租户ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.type" placeholder="字典类型" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.parentId" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select>
@@ -25,12 +32,19 @@
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
-      <el-table-column label="是否自动控制——true是自动false是手动控制" prop="automaticAdjustment" width="100px" align="center" />
-      <el-table-column label="imei" prop="imei" width="100px" align="center" />
-      <el-table-column label="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" prop="intervalTime" width="100px" align="center" />
-      <el-table-column label="dtu注册信息的长度" prop="registrationLength" width="100px" align="center" />
-      <el-table-column label="感应器地址顺序" prop="sensorAddressOrder" width="100px" align="center" />
-      <el-table-column label="" prop="userId" width="100px" align="center" />
+      <el-table-column label="应用模块" prop="appModule" width="100px" align="center" />
+      <el-table-column label="创建时间" prop="createTime" width="100px" align="center" />
+      <el-table-column label="描述说明" prop="description" width="100px" align="center" />
+      <el-table-column label="扩展JSON" prop="extdata" width="100px" align="center" />
+      <el-table-column label="是否可删" prop="isDeletable" width="100px" align="center" />
+      <el-table-column label="删除标记" prop="isDeleted" width="100px" align="center" />
+      <el-table-column label="是否可改" prop="isEditable" width="100px" align="center" />
+      <el-table-column label="显示名" prop="itemName" width="100px" align="center" />
+      <el-table-column label="存储值" prop="itemValue" width="100px" align="center" />
+      <el-table-column label="排序号" prop="sortId" width="100px" align="center" />
+      <el-table-column label="租户ID" prop="tenantId" width="100px" align="center" />
+      <el-table-column label="字典类型" prop="type" width="100px" align="center" />
+      <el-table-column label="ID" prop="parentId" width="100px" align="center" />
       <el-table-column>
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
@@ -48,23 +62,44 @@
         <el-form-item v-show="dialogStatus === 'update'" label="ID" prop="id">
           <el-input v-model="temp.id" disabled placeholder="请输入ID" />
         </el-form-item>
-        <el-form-item label="是否自动控制——true是自动false是手动控制" prop="automaticAdjustment">
-          <el-input v-model="temp.automaticAdjustment" placeholder="请输入是否自动控制——true是自动false是手动控制" />
+        <el-form-item label="应用模块" prop="appModule">
+          <el-input v-model="temp.appModule" placeholder="请输入应用模块" />
         </el-form-item>
-        <el-form-item label="imei" prop="imei">
-          <el-input v-model="temp.imei" placeholder="请输入imei" />
+        <el-form-item label="创建时间" prop="createTime">
+          <el-input v-model="temp.createTime" placeholder="请输入创建时间" />
         </el-form-item>
-        <el-form-item label="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" prop="intervalTime">
-          <el-input v-model="temp.intervalTime" type="number" placeholder="请输入每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" />
+        <el-form-item label="描述说明" prop="description">
+          <el-input v-model="temp.description" placeholder="请输入描述说明" />
         </el-form-item>
-        <el-form-item label="dtu注册信息的长度" prop="registrationLength">
-          <el-input v-model="temp.registrationLength" type="number" placeholder="请输入dtu注册信息的长度" />
+        <el-form-item label="扩展JSON" prop="extdata">
+          <el-input v-model="temp.extdata" placeholder="请输入扩展JSON" />
         </el-form-item>
-        <el-form-item label="感应器地址顺序" prop="sensorAddressOrder">
-          <el-input v-model="temp.sensorAddressOrder" placeholder="请输入感应器地址顺序" />
+        <el-form-item label="是否可删" prop="isDeletable">
+          <el-input v-model="temp.isDeletable" type="number" placeholder="请输入是否可删" />
         </el-form-item>
-        <el-form-item label="" prop="userId">
-          <el-input v-model="temp.userId" type="number" placeholder="请输入" />
+        <el-form-item label="删除标记" prop="isDeleted">
+          <el-input v-model="temp.isDeleted" type="number" placeholder="请输入删除标记" />
+        </el-form-item>
+        <el-form-item label="是否可改" prop="isEditable">
+          <el-input v-model="temp.isEditable" type="number" placeholder="请输入是否可改" />
+        </el-form-item>
+        <el-form-item label="显示名" prop="itemName">
+          <el-input v-model="temp.itemName" placeholder="请输入显示名" />
+        </el-form-item>
+        <el-form-item label="存储值" prop="itemValue">
+          <el-input v-model="temp.itemValue" placeholder="请输入存储值" />
+        </el-form-item>
+        <el-form-item label="排序号" prop="sortId">
+          <el-input v-model="temp.sortId" type="number" placeholder="请输入排序号" />
+        </el-form-item>
+        <el-form-item label="租户ID" prop="tenantId">
+          <el-input v-model="temp.tenantId" placeholder="请输入租户ID" />
+        </el-form-item>
+        <el-form-item label="字典类型" prop="type">
+          <el-input v-model="temp.type" placeholder="请输入字典类型" />
+        </el-form-item>
+        <el-form-item label="ID" prop="parentId">
+          <el-input v-model="temp.parentId" placeholder="请输入ID" />
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -82,7 +117,7 @@
 </template>
 
 <script>
-import { createDtuInfo, deleteDtuInfo, fetchList, updateDtuInfo } from '@/api/dtuInfo'
+import { createDictionary, deleteDictionary, fetchList, updateDictionary } from '@/api/dictionary'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 // const calendarNoImeiOptions = [
@@ -106,12 +141,19 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        automaticAdjustment: undefined,
-        imei: undefined,
-        intervalTime: undefined,
-        registrationLength: undefined,
-        sensorAddressOrder: undefined,
-        userId: undefined,
+        appModule: undefined,
+        createTime: undefined,
+        description: undefined,
+        extdata: undefined,
+        isDeletable: undefined,
+        isDeleted: undefined,
+        isEditable: undefined,
+        itemName: undefined,
+        itemValue: undefined,
+        sortId: undefined,
+        tenantId: undefined,
+        type: undefined,
+        parentId: undefined,
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
@@ -132,12 +174,19 @@ export default {
         create: 'Create'
       },
       rules: {
-        automaticAdjustment: [{ required: true, message: '是否自动控制——true是自动false是手动控制是必填', trigger: 'blur' }],
-        imei: [{ required: true, message: 'imei是必填', trigger: 'blur' }],
-        intervalTime: [{ required: true, message: '每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致是必填', trigger: 'blur' }],
-        registrationLength: [{ required: true, message: 'dtu注册信息的长度是必填', trigger: 'blur' }],
-        sensorAddressOrder: [{ required: true, message: '感应器地址顺序是必填', trigger: 'blur' }],
-        userId: [{ required: true, message: '是必填', trigger: 'blur' }]
+        appModule: [{ required: true, message: '应用模块是必填', trigger: 'blur' }],
+        createTime: [{ required: true, message: '创建时间是必填', trigger: 'blur' }],
+        description: [{ required: true, message: '描述说明是必填', trigger: 'blur' }],
+        extdata: [{ required: true, message: '扩展JSON是必填', trigger: 'blur' }],
+        isDeletable: [{ required: true, message: '是否可删是必填', trigger: 'blur' }],
+        isDeleted: [{ required: true, message: '删除标记是必填', trigger: 'blur' }],
+        isEditable: [{ required: true, message: '是否可改是必填', trigger: 'blur' }],
+        itemName: [{ required: true, message: '显示名是必填', trigger: 'blur' }],
+        itemValue: [{ required: true, message: '存储值是必填', trigger: 'blur' }],
+        sortId: [{ required: true, message: '排序号是必填', trigger: 'blur' }],
+        tenantId: [{ required: true, message: '租户ID是必填', trigger: 'blur' }],
+        type: [{ required: true, message: '字典类型是必填', trigger: 'blur' }],
+        parentId: [{ required: true, message: 'ID是必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -199,7 +248,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createDtuInfo(this.temp).then(() => {
+          createDictionary(this.temp).then(() => {
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -227,7 +276,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateDtuInfo(tempData).then(() => {
+          updateDictionary(tempData).then(() => {
             const index = this.list.findIndex((v) => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -258,7 +307,7 @@ export default {
       })
     },
     delete(row) {
-      deleteDtuInfo(row.id).then(() => {
+      deleteDictionary(row.id).then(() => {
         this.$notify({
           title: 'Success',
           message: '删除成功！',

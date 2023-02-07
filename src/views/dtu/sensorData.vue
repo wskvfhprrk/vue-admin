@@ -1,9 +1,11 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-date-picker v-model="listQuery.beginDate" style="margin-top:0" type="datetime" value-format="yyyy-MM-dd" placeholder="选择开始时间" />
-      <el-date-picker v-model="listQuery.endDate" type="datetime" value-format="yyyy-MM-dd" placeholder="选择结束时间" />
-      <el-input v-model="listQuery.dtuId" placeholder="dtuId" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.createDate" placeholder="接收时间" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.data" placeholder="接收到数据" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.names" placeholder="接收到数据的names" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.units" placeholder="接收到数据的单位" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.dtuId" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select>
@@ -14,7 +16,7 @@
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter"> 查询</el-button>
-      <!--      <el-button class="filter-item" style="margin-left: 10px" type="primary" icon="el-icon-edit" @click="handleCreate"> 新增 </el-button>-->
+      <el-button class="filter-item" style="margin-left: 10px" type="primary" icon="el-icon-edit" @click="handleCreate"> 新增 </el-button>
       <!-- <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" > 导出excel </el-button> -->
     </div>
     <el-table :data="list" border>
@@ -22,19 +24,19 @@
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
-      <el-table-column label="接收时间" prop="createDate" width="200px" align="center" />
-      <el-table-column label="dtuId" prop="dtuId" width="80px" align="center" />
-      <el-table-column label="接收到数据的names" prop="names" width="550px" align="center" />
-      <el-table-column label="接收到数据" prop="data" width="300px" align="center" />
-      <el-table-column label="接收到数据的单位" prop="units" width="260px" align="center" />
-      <!--      <el-table-column>
+      <el-table-column label="接收时间" prop="createDate" width="100px" align="center" />
+      <el-table-column label="接收到数据" prop="data" width="100px" align="center" />
+      <el-table-column label="接收到数据的names" prop="names" width="100px" align="center" />
+      <el-table-column label="接收到数据的单位" prop="units" width="100px" align="center" />
+      <el-table-column label="ID" prop="dtuId" width="100px" align="center" />
+      <el-table-column>
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(row)"> 删除</el-button>
-&lt;!&ndash;          <el-button size="mini" type="success" @click="automaticAdjustmentStatus(row)"> 修改自动控制状态</el-button>&ndash;&gt;
-          &lt;!&ndash; <el-button v-if="row.status!='draft'" size="mini" @click="automaticAdjustmentStatus(row,'draft')"> Draft </el-button> &ndash;&gt;
+          <!--          <el-button size="mini" type="success" @click="automaticAdjustmentStatus(row)"> 修改自动控制状态</el-button>-->
+          <!-- <el-button v-if="row.status!='draft'" size="mini" @click="automaticAdjustmentStatus(row,'draft')"> Draft </el-button> -->
         </template>
-      </el-table-column>-->
+      </el-table-column>
     </el-table>
 
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
@@ -50,14 +52,14 @@
         <el-form-item label="接收到数据" prop="data">
           <el-input v-model="temp.data" placeholder="请输入接收到数据" />
         </el-form-item>
-        <el-form-item label="dtuId" prop="dtuId">
-          <el-input v-model="temp.dtuId" placeholder="请输入dtuId" />
-        </el-form-item>
         <el-form-item label="接收到数据的names" prop="names">
           <el-input v-model="temp.names" placeholder="请输入接收到数据的names" />
         </el-form-item>
         <el-form-item label="接收到数据的单位" prop="units">
           <el-input v-model="temp.units" placeholder="请输入接收到数据的单位" />
+        </el-form-item>
+        <el-form-item label="ID" prop="dtuId">
+          <el-input v-model="temp.dtuId" placeholder="请输入ID" />
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -99,9 +101,10 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        beginDate: '',
-        endDate: '',
         createDate: undefined,
+        data: undefined,
+        names: undefined,
+        units: undefined,
         dtuId: undefined,
         sort: '+id'
       },
@@ -125,9 +128,9 @@ export default {
       rules: {
         createDate: [{ required: true, message: '接收时间是必填', trigger: 'blur' }],
         data: [{ required: true, message: '接收到数据是必填', trigger: 'blur' }],
-        dtuId: [{ required: true, message: 'dtuId是必填', trigger: 'blur' }],
         names: [{ required: true, message: '接收到数据的names是必填', trigger: 'blur' }],
-        units: [{ required: true, message: '接收到数据的单位是必填', trigger: 'blur' }]
+        units: [{ required: true, message: '接收到数据的单位是必填', trigger: 'blur' }],
+        dtuId: [{ required: true, message: 'ID是必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -144,7 +147,6 @@ export default {
         return '不带'
       }
     },
-
     // 获取列表数据
     getList() {
       this.listLoading = true
@@ -157,7 +159,7 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
-
+    // 操作状态
     // 排序改变
     sortChange(data) {
       const { prop, order } = data

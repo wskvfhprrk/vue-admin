@@ -2,31 +2,31 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/dtuInfo/findPage',
+    url: '/command/findPage',
     method: 'get',
     params: query
   })
 }
 
-export function createDtuInfo(data) {
+export function createCommand(data) {
   return request({
-    url: '/dtuInfo',
+    url: '/command',
     method: 'post',
     data
   })
 }
 
-export function updateDtuInfo(data) {
+export function updateCommand(data) {
   return request({
-    url: '/dtuInfo',
+    url: '/command',
     method: 'put',
     data
   })
 }
 
-export function deleteDtuInfo(id) {
+export function deleteCommand(id) {
   return request({
-    url: '/dtuInfo/' + id,
+    url: '/command/' + id,
     method: 'delete'
   })
 }

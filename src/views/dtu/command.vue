@@ -1,12 +1,17 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.automaticAdjustment" placeholder="是否自动控制——true是自动false是手动控制" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.imei" placeholder="imei" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.intervalTime" placeholder="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.registrationLength" placeholder="dtu注册信息的长度" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.sensorAddressOrder" placeholder="感应器地址顺序" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.userId" placeholder="" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.calculationFormula" placeholder="校正数据计算公式——D是测得数据，如果实际数据是原来的小10倍加上5，公式为D/10+5,用测得的结果带入计算公式得到最后实际结果" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.commandType" placeholder="指令类型" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.instructions" placeholder="指令" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.isUse" placeholder="是否正在使用——true正在使用，flase没有使用" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.manufacturer" placeholder="生产厂商" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="指令名称" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.remarks" placeholder="备注" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.unit" placeholder="接收到数据的单位" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.waitTimeNextCommand" placeholder="等待时间下一指令（单位：秒）" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.checkingRulesId" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.nextLevelInstruction" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select>
@@ -25,12 +30,17 @@
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
-      <el-table-column label="是否自动控制——true是自动false是手动控制" prop="automaticAdjustment" width="100px" align="center" />
-      <el-table-column label="imei" prop="imei" width="100px" align="center" />
-      <el-table-column label="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" prop="intervalTime" width="100px" align="center" />
-      <el-table-column label="dtu注册信息的长度" prop="registrationLength" width="100px" align="center" />
-      <el-table-column label="感应器地址顺序" prop="sensorAddressOrder" width="100px" align="center" />
-      <el-table-column label="" prop="userId" width="100px" align="center" />
+      <el-table-column label="校正数据计算公式——D是测得数据，如果实际数据是原来的小10倍加上5，公式为D/10+5,用测得的结果带入计算公式得到最后实际结果" prop="calculationFormula" width="100px" align="center" />
+      <el-table-column label="指令类型" prop="commandType" width="100px" align="center" />
+      <el-table-column label="指令" prop="instructions" width="100px" align="center" />
+      <el-table-column label="是否正在使用——true正在使用，flase没有使用" prop="isUse" width="100px" align="center" />
+      <el-table-column label="生产厂商" prop="manufacturer" width="100px" align="center" />
+      <el-table-column label="指令名称" prop="name" width="100px" align="center" />
+      <el-table-column label="备注" prop="remarks" width="100px" align="center" />
+      <el-table-column label="接收到数据的单位" prop="unit" width="100px" align="center" />
+      <el-table-column label="等待时间下一指令（单位：秒）" prop="waitTimeNextCommand" width="100px" align="center" />
+      <el-table-column label="ID" prop="checkingRulesId" width="100px" align="center" />
+      <el-table-column label="ID" prop="nextLevelInstruction" width="100px" align="center" />
       <el-table-column>
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
@@ -48,23 +58,38 @@
         <el-form-item v-show="dialogStatus === 'update'" label="ID" prop="id">
           <el-input v-model="temp.id" disabled placeholder="请输入ID" />
         </el-form-item>
-        <el-form-item label="是否自动控制——true是自动false是手动控制" prop="automaticAdjustment">
-          <el-input v-model="temp.automaticAdjustment" placeholder="请输入是否自动控制——true是自动false是手动控制" />
+        <el-form-item label="校正数据计算公式——D是测得数据，如果实际数据是原来的小10倍加上5，公式为D/10+5,用测得的结果带入计算公式得到最后实际结果" prop="calculationFormula">
+          <el-input v-model="temp.calculationFormula" placeholder="请输入校正数据计算公式——D是测得数据，如果实际数据是原来的小10倍加上5，公式为D/10+5,用测得的结果带入计算公式得到最后实际结果" />
         </el-form-item>
-        <el-form-item label="imei" prop="imei">
-          <el-input v-model="temp.imei" placeholder="请输入imei" />
+        <el-form-item label="指令类型" prop="commandType">
+          <el-input v-model="temp.commandType" type="number" placeholder="请输入指令类型" />
         </el-form-item>
-        <el-form-item label="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" prop="intervalTime">
-          <el-input v-model="temp.intervalTime" type="number" placeholder="请输入每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" />
+        <el-form-item label="指令" prop="instructions">
+          <el-input v-model="temp.instructions" placeholder="请输入指令" />
         </el-form-item>
-        <el-form-item label="dtu注册信息的长度" prop="registrationLength">
-          <el-input v-model="temp.registrationLength" type="number" placeholder="请输入dtu注册信息的长度" />
+        <el-form-item label="是否正在使用——true正在使用，flase没有使用" prop="isUse">
+          <el-input v-model="temp.isUse" placeholder="请输入是否正在使用——true正在使用，flase没有使用" />
         </el-form-item>
-        <el-form-item label="感应器地址顺序" prop="sensorAddressOrder">
-          <el-input v-model="temp.sensorAddressOrder" placeholder="请输入感应器地址顺序" />
+        <el-form-item label="生产厂商" prop="manufacturer">
+          <el-input v-model="temp.manufacturer" placeholder="请输入生产厂商" />
         </el-form-item>
-        <el-form-item label="" prop="userId">
-          <el-input v-model="temp.userId" type="number" placeholder="请输入" />
+        <el-form-item label="指令名称" prop="name">
+          <el-input v-model="temp.name" placeholder="请输入指令名称" />
+        </el-form-item>
+        <el-form-item label="备注" prop="remarks">
+          <el-input v-model="temp.remarks" placeholder="请输入备注" />
+        </el-form-item>
+        <el-form-item label="接收到数据的单位" prop="unit">
+          <el-input v-model="temp.unit" placeholder="请输入接收到数据的单位" />
+        </el-form-item>
+        <el-form-item label="等待时间下一指令（单位：秒）" prop="waitTimeNextCommand">
+          <el-input v-model="temp.waitTimeNextCommand" placeholder="请输入等待时间下一指令（单位：秒）" />
+        </el-form-item>
+        <el-form-item label="ID" prop="checkingRulesId">
+          <el-input v-model="temp.checkingRulesId" type="number" placeholder="请输入ID" />
+        </el-form-item>
+        <el-form-item label="ID" prop="nextLevelInstruction">
+          <el-input v-model="temp.nextLevelInstruction" placeholder="请输入ID" />
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -82,7 +107,7 @@
 </template>
 
 <script>
-import { createDtuInfo, deleteDtuInfo, fetchList, updateDtuInfo } from '@/api/dtuInfo'
+import { createCommand, deleteCommand, fetchList, updateCommand } from '@/api/command'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 // const calendarNoImeiOptions = [
@@ -106,12 +131,17 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        automaticAdjustment: undefined,
-        imei: undefined,
-        intervalTime: undefined,
-        registrationLength: undefined,
-        sensorAddressOrder: undefined,
-        userId: undefined,
+        calculationFormula: undefined,
+        commandType: undefined,
+        instructions: undefined,
+        isUse: undefined,
+        manufacturer: undefined,
+        name: undefined,
+        remarks: undefined,
+        unit: undefined,
+        waitTimeNextCommand: undefined,
+        checkingRulesId: undefined,
+        nextLevelInstruction: undefined,
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
@@ -132,12 +162,17 @@ export default {
         create: 'Create'
       },
       rules: {
-        automaticAdjustment: [{ required: true, message: '是否自动控制——true是自动false是手动控制是必填', trigger: 'blur' }],
-        imei: [{ required: true, message: 'imei是必填', trigger: 'blur' }],
-        intervalTime: [{ required: true, message: '每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致是必填', trigger: 'blur' }],
-        registrationLength: [{ required: true, message: 'dtu注册信息的长度是必填', trigger: 'blur' }],
-        sensorAddressOrder: [{ required: true, message: '感应器地址顺序是必填', trigger: 'blur' }],
-        userId: [{ required: true, message: '是必填', trigger: 'blur' }]
+        calculationFormula: [{ required: true, message: '校正数据计算公式——D是测得数据，如果实际数据是原来的小10倍加上5，公式为D/10+5,用测得的结果带入计算公式得到最后实际结果是必填', trigger: 'blur' }],
+        commandType: [{ required: true, message: '指令类型是必填', trigger: 'blur' }],
+        instructions: [{ required: true, message: '指令是必填', trigger: 'blur' }],
+        isUse: [{ required: true, message: '是否正在使用——true正在使用，flase没有使用是必填', trigger: 'blur' }],
+        manufacturer: [{ required: true, message: '生产厂商是必填', trigger: 'blur' }],
+        name: [{ required: true, message: '指令名称是必填', trigger: 'blur' }],
+        remarks: [{ required: true, message: '备注是必填', trigger: 'blur' }],
+        unit: [{ required: true, message: '接收到数据的单位是必填', trigger: 'blur' }],
+        waitTimeNextCommand: [{ required: true, message: '等待时间下一指令（单位：秒）是必填', trigger: 'blur' }],
+        checkingRulesId: [{ required: true, message: 'ID是必填', trigger: 'blur' }],
+        nextLevelInstruction: [{ required: true, message: 'ID是必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -199,7 +234,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createDtuInfo(this.temp).then(() => {
+          createCommand(this.temp).then(() => {
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -227,7 +262,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateDtuInfo(tempData).then(() => {
+          updateCommand(tempData).then(() => {
             const index = this.list.findIndex((v) => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -258,7 +293,7 @@ export default {
       })
     },
     delete(row) {
-      deleteDtuInfo(row.id).then(() => {
+      deleteCommand(row.id).then(() => {
         this.$notify({
           title: 'Success',
           message: '删除成功！',

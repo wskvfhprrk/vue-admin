@@ -2,31 +2,31 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/dtuInfo/findPage',
+    url: '/dictionary/findPage',
     method: 'get',
     params: query
   })
 }
 
-export function createDtuInfo(data) {
+export function createDictionary(data) {
   return request({
-    url: '/dtuInfo',
+    url: '/dictionary',
     method: 'post',
     data
   })
 }
 
-export function updateDtuInfo(data) {
+export function updateDictionary(data) {
   return request({
-    url: '/dtuInfo',
+    url: '/dictionary',
     method: 'put',
     data
   })
 }
 
-export function deleteDtuInfo(id) {
+export function deleteDictionary(id) {
   return request({
-    url: '/dtuInfo/' + id,
+    url: '/dictionary/' + id,
     method: 'delete'
   })
 }

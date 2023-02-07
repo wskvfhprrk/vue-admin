@@ -1,20 +1,20 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.commonId" placeholder="继电器命令ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.createDate" placeholder="创建时间" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.dtuId" placeholder="dtuId" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.status" placeholder="当前状态——true是新的状态，false是过期的状态" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.updateDate" placeholder="修改时间" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.dtuId" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.instructionDefinitionId" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.noImei" placeholder="指令前带imei" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in calendarNoImeiOptions" :key="item.key" :label="item.noImei_name" :value="item.key" />
-      </el-select>
+      </el-select>-->
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select>-->
+      </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter"> 查询</el-button>
       <el-button class="filter-item" style="margin-left: 10px" type="primary" icon="el-icon-edit" @click="handleCreate"> 新增 </el-button>
       <!-- <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload" > 导出excel </el-button> -->
@@ -24,11 +24,11 @@
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
-      <el-table-column label="继电器命令ID" prop="commonId" width="200px" align="center" />
-      <el-table-column label="创建时间" prop="createDate" width="200px" align="center" />
-      <el-table-column label="dtuId" prop="dtuId" width="200px" align="center" />
-      <el-table-column label="当前状态——true是新的状态，false是过期的状态" prop="status" width="200px" align="center" />
-      <el-table-column label="修改时间" prop="updateDate" width="200px" align="center" />
+      <el-table-column label="创建时间" prop="createDate" width="100px" align="center" />
+      <el-table-column label="当前状态——true是新的状态，false是过期的状态" prop="status" width="100px" align="center" />
+      <el-table-column label="修改时间" prop="updateDate" width="100px" align="center" />
+      <el-table-column label="ID" prop="dtuId" width="100px" align="center" />
+      <el-table-column label="ID" prop="instructionDefinitionId" width="100px" align="center" />
       <el-table-column>
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
@@ -42,36 +42,24 @@
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        label-width="200px"
-        style="width: 400px; margin-left: 50px"
-      >
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="200px" style="width: 400px; margin-left: 50px">
         <el-form-item v-show="dialogStatus === 'update'" label="ID" prop="id">
           <el-input v-model="temp.id" disabled placeholder="请输入ID" />
         </el-form-item>
-        -1
-        <el-form-item label="继电器命令ID" prop="commonId">
-          <el-input v-model="temp.commonId" placeholder="请输入继电器命令ID" />
-        </el-form-item>
-        -1
         <el-form-item label="创建时间" prop="createDate">
           <el-input v-model="temp.createDate" placeholder="请输入创建时间" />
         </el-form-item>
-        -1
-        <el-form-item label="dtuId" prop="dtuId">
-          <el-input v-model="temp.dtuId" placeholder="请输入dtuId" />
-        </el-form-item>
-        0
         <el-form-item label="当前状态——true是新的状态，false是过期的状态" prop="status">
           <el-input v-model="temp.status" placeholder="请输入当前状态——true是新的状态，false是过期的状态" />
         </el-form-item>
-        -1
         <el-form-item label="修改时间" prop="updateDate">
           <el-input v-model="temp.updateDate" placeholder="请输入修改时间" />
+        </el-form-item>
+        <el-form-item label="ID" prop="dtuId">
+          <el-input v-model="temp.dtuId" placeholder="请输入ID" />
+        </el-form-item>
+        <el-form-item label="ID" prop="instructionDefinitionId">
+          <el-input v-model="temp.instructionDefinitionId" placeholder="请输入ID" />
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -113,11 +101,11 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        commonId: undefined,
         createDate: undefined,
-        dtuId: undefined,
         status: undefined,
         updateDate: undefined,
+        dtuId: undefined,
+        instructionDefinitionId: undefined,
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
@@ -138,11 +126,11 @@ export default {
         create: 'Create'
       },
       rules: {
-        commonId: [{ required: true, message: '继电器命令ID是必填', trigger: 'blur' }],
         createDate: [{ required: true, message: '创建时间是必填', trigger: 'blur' }],
-        dtuId: [{ required: true, message: 'dtuId是必填', trigger: 'blur' }],
         status: [{ required: true, message: '当前状态——true是新的状态，false是过期的状态是必填', trigger: 'blur' }],
-        updateDate: [{ required: true, message: '修改时间是必填', trigger: 'blur' }]
+        updateDate: [{ required: true, message: '修改时间是必填', trigger: 'blur' }],
+        dtuId: [{ required: true, message: 'ID是必填', trigger: 'blur' }],
+        instructionDefinitionId: [{ required: true, message: 'ID是必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -159,13 +147,6 @@ export default {
         return '不带'
       }
     },
-    automaticFormatter(row, column) {
-      if (row.automaticAdjustment) {
-        return '自动'
-      } else {
-        return '手动'
-      }
-    },
     // 获取列表数据
     getList() {
       this.listLoading = true
@@ -178,7 +159,7 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
-
+    // 操作状态
     // 排序改变
     sortChange(data) {
       const { prop, order } = data

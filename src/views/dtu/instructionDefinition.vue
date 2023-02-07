@@ -1,12 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.automaticAdjustment" placeholder="是否自动控制——true是自动false是手动控制" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.imei" placeholder="imei" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.intervalTime" placeholder="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.registrationLength" placeholder="dtu注册信息的长度" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.sensorAddressOrder" placeholder="感应器地址顺序" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.userId" placeholder="" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.instructionType" placeholder="指令类型" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="名称" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.remarks" placeholder="备注" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.dtuId" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select>
@@ -25,12 +23,10 @@
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
-      <el-table-column label="是否自动控制——true是自动false是手动控制" prop="automaticAdjustment" width="100px" align="center" />
-      <el-table-column label="imei" prop="imei" width="100px" align="center" />
-      <el-table-column label="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" prop="intervalTime" width="100px" align="center" />
-      <el-table-column label="dtu注册信息的长度" prop="registrationLength" width="100px" align="center" />
-      <el-table-column label="感应器地址顺序" prop="sensorAddressOrder" width="100px" align="center" />
-      <el-table-column label="" prop="userId" width="100px" align="center" />
+      <el-table-column label="指令类型" prop="instructionType" width="100px" align="center" />
+      <el-table-column label="名称" prop="name" width="100px" align="center" />
+      <el-table-column label="备注" prop="remarks" width="100px" align="center" />
+      <el-table-column label="ID" prop="dtuId" width="100px" align="center" />
       <el-table-column>
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
@@ -48,23 +44,17 @@
         <el-form-item v-show="dialogStatus === 'update'" label="ID" prop="id">
           <el-input v-model="temp.id" disabled placeholder="请输入ID" />
         </el-form-item>
-        <el-form-item label="是否自动控制——true是自动false是手动控制" prop="automaticAdjustment">
-          <el-input v-model="temp.automaticAdjustment" placeholder="请输入是否自动控制——true是自动false是手动控制" />
+        <el-form-item label="指令类型" prop="instructionType">
+          <el-input v-model="temp.instructionType" type="number" placeholder="请输入指令类型" />
         </el-form-item>
-        <el-form-item label="imei" prop="imei">
-          <el-input v-model="temp.imei" placeholder="请输入imei" />
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" placeholder="请输入名称" />
         </el-form-item>
-        <el-form-item label="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" prop="intervalTime">
-          <el-input v-model="temp.intervalTime" type="number" placeholder="请输入每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" />
+        <el-form-item label="备注" prop="remarks">
+          <el-input v-model="temp.remarks" placeholder="请输入备注" />
         </el-form-item>
-        <el-form-item label="dtu注册信息的长度" prop="registrationLength">
-          <el-input v-model="temp.registrationLength" type="number" placeholder="请输入dtu注册信息的长度" />
-        </el-form-item>
-        <el-form-item label="感应器地址顺序" prop="sensorAddressOrder">
-          <el-input v-model="temp.sensorAddressOrder" placeholder="请输入感应器地址顺序" />
-        </el-form-item>
-        <el-form-item label="" prop="userId">
-          <el-input v-model="temp.userId" type="number" placeholder="请输入" />
+        <el-form-item label="ID" prop="dtuId">
+          <el-input v-model="temp.dtuId" placeholder="请输入ID" />
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -82,7 +72,7 @@
 </template>
 
 <script>
-import { createDtuInfo, deleteDtuInfo, fetchList, updateDtuInfo } from '@/api/dtuInfo'
+import { createInstructionDefinition, deleteInstructionDefinition, fetchList, updateInstructionDefinition } from '@/api/instructionDefinition'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 // const calendarNoImeiOptions = [
@@ -106,12 +96,10 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        automaticAdjustment: undefined,
-        imei: undefined,
-        intervalTime: undefined,
-        registrationLength: undefined,
-        sensorAddressOrder: undefined,
-        userId: undefined,
+        instructionType: undefined,
+        name: undefined,
+        remarks: undefined,
+        dtuId: undefined,
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
@@ -132,12 +120,10 @@ export default {
         create: 'Create'
       },
       rules: {
-        automaticAdjustment: [{ required: true, message: '是否自动控制——true是自动false是手动控制是必填', trigger: 'blur' }],
-        imei: [{ required: true, message: 'imei是必填', trigger: 'blur' }],
-        intervalTime: [{ required: true, message: '每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致是必填', trigger: 'blur' }],
-        registrationLength: [{ required: true, message: 'dtu注册信息的长度是必填', trigger: 'blur' }],
-        sensorAddressOrder: [{ required: true, message: '感应器地址顺序是必填', trigger: 'blur' }],
-        userId: [{ required: true, message: '是必填', trigger: 'blur' }]
+        instructionType: [{ required: true, message: '指令类型是必填', trigger: 'blur' }],
+        name: [{ required: true, message: '名称是必填', trigger: 'blur' }],
+        remarks: [{ required: true, message: '备注是必填', trigger: 'blur' }],
+        dtuId: [{ required: true, message: 'ID是必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -199,7 +185,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createDtuInfo(this.temp).then(() => {
+          createInstructionDefinition(this.temp).then(() => {
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -227,7 +213,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateDtuInfo(tempData).then(() => {
+          updateInstructionDefinition(tempData).then(() => {
             const index = this.list.findIndex((v) => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -258,7 +244,7 @@ export default {
       })
     },
     delete(row) {
-      deleteDtuInfo(row.id).then(() => {
+      deleteInstructionDefinition(row.id).then(() => {
         this.$notify({
           title: 'Success',
           message: '删除成功！',

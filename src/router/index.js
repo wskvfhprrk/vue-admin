@@ -180,11 +180,11 @@ export const asyncRoutes = [
         meta: { title: '感应器' },
         roles: ['admin']
       }, {
-        path: 'relayDefinitionCommand',
-        component: () => import('@/views/dtu/relayDefinitionCommand'),
-        name: 'relayDefinitionCommand',
+        path: 'instructionDefinition',
+        component: () => import('@/views/dtu/instructionDefinition'),
+        name: 'instructionDefinition',
         meta: { title: '继电器定义指令' },
-        roles: ['admin', 'relayDefinitionCommand']
+        roles: ['admin', 'instructionDefinition']
       }, {
         path: 'sensorData',
         component: () => import('@/views/dtu/sensorData'),

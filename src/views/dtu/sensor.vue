@@ -1,16 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.adrss" placeholder="感应器编号地址" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.calculationFormula" placeholder="校验数据公式" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.dtuId" placeholder="dtuId" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.hex" placeholder="crc16验证码" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.max" placeholder="获取值参考最大值" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.maxRelayDefinitionCommandId" placeholder="超过最大值时的指令" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.min" placeholder="获取值参考最小值" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.minRelayDefinitionCommandId" placeholder="小于最小值时发出的指令" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.name" placeholder="名称" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.unit" placeholder="接收到数据的单位" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.dtuId" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.maxInstructionDefinitionId" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.minInstructionDefinitionId" placeholder="ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select>
@@ -29,20 +25,18 @@
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
-      <el-table-column label="感应器编号地址" prop="adrss" width="100px" align="center" />
-      <el-table-column label="校验公式" prop="calculationFormula" width="100px" align="center" />
-      <el-table-column label="dtuId" prop="dtuId" width="100px" align="center" />
-      <el-table-column label="crc16验证码" prop="hex" width="100px" align="center" />
       <el-table-column label="获取值参考最大值" prop="max" width="100px" align="center" />
-      <el-table-column label="超过最大值时的指令" prop="maxRelayDefinitionCommandId" width="100px" align="center" />
       <el-table-column label="获取值参考最小值" prop="min" width="100px" align="center" />
-      <el-table-column label="小于最小值时发出的指令" prop="minRelayDefinitionCommandId" width="100px" align="center" />
       <el-table-column label="名称" prop="name" width="100px" align="center" />
-      <el-table-column label="接收到数据的单位" prop="unit" width="100px" align="center" />
+      <el-table-column label="ID" prop="dtuId" width="100px" align="center" />
+      <el-table-column label="ID" prop="maxInstructionDefinitionId" width="100px" align="center" />
+      <el-table-column label="ID" prop="minInstructionDefinitionId" width="100px" align="center" />
       <el-table-column>
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(row)"> 删除</el-button>
+          <!--          <el-button size="mini" type="success" @click="automaticAdjustmentStatus(row)"> 修改自动控制状态</el-button>-->
+          <!-- <el-button v-if="row.status!='draft'" size="mini" @click="automaticAdjustmentStatus(row,'draft')"> Draft </el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -54,35 +48,23 @@
         <el-form-item v-show="dialogStatus === 'update'" label="ID" prop="id">
           <el-input v-model="temp.id" disabled placeholder="请输入ID" />
         </el-form-item>
-        <el-form-item label="感应器编号地址" prop="adrss">
-          <el-input v-model="temp.adrss" type="number" placeholder="请输入感应器编号地址" />
-        </el-form-item>
-        <el-form-item label="校验数据公式" prop="calculationFormula">
-          <el-input v-model="temp.calculationFormula" placeholder="请输入校验数据公式" />
-        </el-form-item>
-        <el-form-item label="dtuId" prop="dtuId">
-          <el-input v-model="temp.dtuId" placeholder="请输入dtuId" />
-        </el-form-item>
-        <el-form-item label="crc16验证码" prop="hex">
-          <el-input v-model="temp.hex" placeholder="请输入crc16验证码" />
-        </el-form-item>
         <el-form-item label="获取值参考最大值" prop="max">
           <el-input v-model="temp.max" type="number" placeholder="请输入获取值参考最大值" />
-        </el-form-item>
-        <el-form-item label="超过最大值时的指令" prop="maxRelayDefinitionCommandId">
-          <el-input v-model="temp.maxRelayDefinitionCommandId" placeholder="请输入超过最大值时的指令" />
         </el-form-item>
         <el-form-item label="获取值参考最小值" prop="min">
           <el-input v-model="temp.min" type="number" placeholder="请输入获取值参考最小值" />
         </el-form-item>
-        <el-form-item label="小于最小值时发出的指令" prop="minRelayDefinitionCommandId">
-          <el-input v-model="temp.minRelayDefinitionCommandId" placeholder="请输入小于最小值时发出的指令" />
-        </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name" placeholder="请输入名称" />
         </el-form-item>
-        <el-form-item label="接收到数据的单位" prop="unit">
-          <el-input v-model="temp.unit" placeholder="请输入接收到数据的单位" />
+        <el-form-item label="ID" prop="dtuId">
+          <el-input v-model="temp.dtuId" placeholder="请输入ID" />
+        </el-form-item>
+        <el-form-item label="ID" prop="maxInstructionDefinitionId">
+          <el-input v-model="temp.maxInstructionDefinitionId" placeholder="请输入ID" />
+        </el-form-item>
+        <el-form-item label="ID" prop="minInstructionDefinitionId">
+          <el-input v-model="temp.minInstructionDefinitionId" placeholder="请输入ID" />
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -124,16 +106,12 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        adrss: undefined,
-        calculationFormula: undefined,
-        dtuId: undefined,
-        hex: undefined,
         max: undefined,
-        maxRelayDefinitionCommandId: undefined,
         min: undefined,
-        minRelayDefinitionCommandId: undefined,
         name: undefined,
-        unit: undefined,
+        dtuId: undefined,
+        maxInstructionDefinitionId: undefined,
+        minInstructionDefinitionId: undefined,
         sort: '+id'
       },
       importanceOptions: [1, 2, 3],
@@ -154,16 +132,12 @@ export default {
         create: 'Create'
       },
       rules: {
-        adrss: [{ required: true, message: '感应器编号地址是必填', trigger: 'blur' }],
-        calculationFormula: [{ required: true, message: '校验地址', trigger: 'blur' }],
-        dtuId: [{ required: true, message: 'dtuId是必填', trigger: 'blur' }],
-        hex: [{ required: true, message: 'crc16验证码是必填', trigger: 'blur' }],
         max: [{ required: true, message: '获取值参考最大值是必填', trigger: 'blur' }],
-        maxRelayDefinitionCommandId: [{ required: true, message: '超过最大值时的指令是必填', trigger: 'blur' }],
         min: [{ required: true, message: '获取值参考最小值是必填', trigger: 'blur' }],
-        minRelayDefinitionCommandId: [{ required: true, message: '小于最小值时发出的指令是必填', trigger: 'blur' }],
         name: [{ required: true, message: '名称是必填', trigger: 'blur' }],
-        unit: [{ required: true, message: '接收到数据的单位是必填', trigger: 'blur' }]
+        dtuId: [{ required: true, message: 'ID是必填', trigger: 'blur' }],
+        maxInstructionDefinitionId: [{ required: true, message: 'ID是必填', trigger: 'blur' }],
+        minInstructionDefinitionId: [{ required: true, message: 'ID是必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -180,7 +154,6 @@ export default {
         return '不带'
       }
     },
-
     // 获取列表数据
     getList() {
       this.listLoading = true
@@ -193,6 +166,7 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
+    // 操作状态
     // 排序改变
     sortChange(data) {
       const { prop, order } = data
