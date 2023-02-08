@@ -125,6 +125,13 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'dictionary',
+        component: () => import('@/views/dictionary'),
+        name: 'dictionary',
+        meta: { title: '数据字典实体类' },
+        roles: ['admin', 'dictionary']
+      },
+      {
         path: 'directive',
         component: () => import('@/views/permission/directive'),
         name: 'DirectivePermission',
