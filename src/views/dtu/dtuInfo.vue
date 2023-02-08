@@ -25,12 +25,10 @@
       <!-- <el-table-column label="Date" width="150px" align="center">
         <template slot-scope="{row}"> <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> </template>
       </el-table-column> -->
-      <el-table-column label="是否自动控制——true是自动false是手动控制" prop="automaticAdjustment" width="100px" align="center" />
       <el-table-column label="imei" prop="imei" width="100px" align="center" />
-      <el-table-column label="每组轮询指令隔时间(毫秒)——与dtu每组间隔时间要一致" prop="intervalTime" width="100px" align="center" />
       <el-table-column label="dtu注册信息的长度" prop="registrationLength" width="100px" align="center" />
       <el-table-column label="感应器地址顺序" prop="sensorAddressOrder" width="100px" align="center" />
-      <el-table-column label="" prop="userId" width="100px" align="center" />
+      <el-table-column label="用户信息" prop="userId" width="100px" align="center" />
       <el-table-column>
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)"> 修改</el-button>
@@ -63,8 +61,8 @@
         <el-form-item label="感应器地址顺序" prop="sensorAddressOrder">
           <el-input v-model="temp.sensorAddressOrder" placeholder="请输入感应器地址顺序" />
         </el-form-item>
-        <el-form-item label="" prop="userId">
-          <el-input v-model="temp.userId" type="number" placeholder="请输入" />
+        <el-form-item label="用户信息" prop="userId">
+          <el-input v-model="temp.userId" placeholder="请输入用户信息" />
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -147,11 +145,11 @@ export default {
   },
   methods: {
     // 格式化表格数据
-    Ynformater(row, column) {
+    automaticAdjustmentFormat(row, column) {
       if (row.noImei) {
-        return '带的'
+        return '自动'
       } else {
-        return '不带'
+        return '手动'
       }
     },
     // 获取列表数据
