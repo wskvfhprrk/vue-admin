@@ -160,13 +160,6 @@ export const asyncRoutes = [
         roles: ['admin']
       },
       {
-        path: 'relay',
-        component: () => import('@/views/dtu/relay'),
-        name: 'relay',
-        meta: { title: '继电器设备' },
-        roles: ['admin']
-      },
-      {
         path: 'CommandStatus',
         component: () => import('@/views/dtu/commandStatus'),
         name: 'CommandStatus',
