@@ -120,10 +120,7 @@ export default {
         parentId: undefined,
         sort: '+id'
       },
-      dictionary:{
-        appModule: undefined,
-        type: undefined
-      },
+      dictionary:[],
       importanceOptions: [1, 2, 3],
       // 格式化数据
       isUseOptions: [
@@ -183,8 +180,8 @@ export default {
     },
     getDictionary() {
       getDictionary(this.dictionary).then((response) => {
-        this.dictionary.appModule = '字典'
-        this.dictionary.type = 'SECOND_LEVEL'
+        appModule = '字典'
+        type = 'SECOND_LEVEL'
       })
     },
     // 获取列表数据
