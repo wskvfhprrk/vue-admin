@@ -58,11 +58,11 @@
         <el-form-item label="描述说明">
           <el-input v-model="temp.description" placeholder="请输入描述说明" />
         </el-form-item>
-        <el-form-item label="是否已用" prop="isUse">
+        <!-- <el-form-item  label="是否已用" prop="isUse">
           <el-select v-model="temp.isUse" clearable placeholder="请选择是否已用" style="width: 140px" class="filter-item" >
             <el-option v-for="item in isUseOptions" :key="item.key" :label="item.label" :value="item.key" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="显示名" prop="itemName">
           <el-input v-model="temp.itemName" placeholder="请输入显示名" />
         </el-form-item>
@@ -78,7 +78,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="上一级ID">
-          <el-input v-model="temp.parentId" placeholder="请输入上一级ID" />
+          <el-select v-model="temp.parentId" clearable placeholder="请选择上一级" style="width: 140px" class="filter-item" >
+            <el-option v-for="item in dictionaryParent" :key="item.id" :label="item.itemName" :value="item.id" />
+          </el-select>
         </el-form-item>
         <!-- <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
@@ -96,7 +98,7 @@
 </template>
 
 <script>
-import { createDictionary, deleteDictionary, fetchList, updateDictionary, getDictionary } from '@/api/dictionary'
+import { createDictionary, deleteDictionary, fetchList, updateDictionary, getDictionary,getDictionaryParent } from '@/api/dictionary'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 export default {
@@ -127,6 +129,7 @@ export default {
         type:'SECOND_LEVEL'
       },
       dictionary:[],
+      dictionaryParent:[],
       importanceOptions: [1, 2, 3],
       // 格式化数据
       isUseOptions: [
@@ -154,7 +157,7 @@ export default {
       },
       rules: {
         createTime: [{ required: true, message: '创建时间是必填', trigger: 'blur' }],
-        isUse: [{ required: true, message: '是否已用是必填', trigger: 'blur' }],
+        // isUse: [{ required: true, message: '是否已用是必填', trigger: 'blur' }],
         itemName: [{ required: true, message: '显示名是必填', trigger: 'blur' }],
         sortId: [{ required: true, message: '排序号是必填', trigger: 'blur' }],
         type: [{ required: true, message: '字典类型是必填', trigger: 'blur' }]
@@ -164,7 +167,8 @@ export default {
   },
   created() {
     this.getList(),
-    this.getDictionary()
+    this.getDictionary(),
+    this.getDictionaryParent()
   },
   methods: {
     // 格式化表格数据
@@ -184,9 +188,14 @@ export default {
         return '二级'
       }
     },
-    getDictionary() {        
+    getDictionary() {
       getDictionary(this.dictionaryQuery).then((response) => {
-        this.dictionary =response.data        
+        this.dictionary =response.data
+      })
+    },
+    getDictionaryParent() {
+      getDictionaryParent().then((response) => {
+        this.dictionaryParent =response.data
       })
     },
     // 获取列表数据
@@ -199,7 +208,8 @@ export default {
     },
     handleFilter() {
       this.listQuery.page = 1
-      this.getList()
+      this.getList(),
+      this.dictionaryParent()
     },
     // 操作状态
     // 排序改变
@@ -227,9 +237,9 @@ export default {
       this.resetTemp()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate()
+      // })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -242,7 +252,8 @@ export default {
               type: 'success',
               duration: 2000
             },
-            this.getList()
+            this.getList(),
+            this.dictionaryParent()
             )
           })
         }
@@ -272,13 +283,21 @@ export default {
               type: 'success',
               duration: 2000
             },
-            this.getList()
+            this.getList(),            
+            this.dictionaryParent()
             )
           })
         }
       })
     },
     handleDelete(row) {
+      if(row.isUse){
+        this.$message({
+          type: 'error',
+          message: '数据已经被使用，无法删除！'
+        })
+        return;
+      }
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -300,7 +319,8 @@ export default {
           type: 'success',
           duration: 2000
         },
-        this.getList()
+        this.getList(),
+        this.getDictionaryParent()
         )
       })
     }

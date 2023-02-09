@@ -37,3 +37,9 @@ export function getDictionary(query) {
     params: query
   })
 }
+export function getDictionaryParent() {
+  return request({
+    url: '/dictionary/getParent',
+    method: 'get'
+  })
+}
