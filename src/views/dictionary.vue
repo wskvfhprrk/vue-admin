@@ -4,20 +4,14 @@
       <el-input v-model="listQuery.appModule" placeholder="应用模块" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.createTime" placeholder="创建时间" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.description" placeholder="描述说明" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.isUse" style="width: 140px" clearable class="filter-item" placeholder="请选择">
-        <el-option v-for="item in isUseOptions" :key="item.value" clearable :label="item.label" :value="item.value" />
+      <el-select v-model="listQuery.isUse" clearable placeholder="是否已用" style="width: 140px" class="filter-item" @change="handleFilter">
+        <el-option v-for="item in isUseOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
       <el-input v-model="listQuery.itemName" placeholder="显示名" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.itemValue" placeholder="存储值" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.sortId" placeholder="排序号" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.type" placeholder="字典类型" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.parentId" placeholder="上一级ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
-      </el-select>
-      <el-select v-model="listQuery.noImei" placeholder="指令前带imei" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in calendarNoImeiOptions" :key="item.key" :label="item.noImei_name" :value="item.key" />
-      </el-select>-->
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
@@ -63,7 +57,9 @@
           <el-input v-model="temp.description" placeholder="请输入描述说明" />
         </el-form-item>
         <el-form-item label="是否已用" prop="isUse">
-          <el-select v-model="temp.isUse" placeholder="请选择"><el-option v-for="item in isUseOptions" :key="item.value" :label="item.label" :value="item.value" /> </el-select>
+          <el-select v-model="temp.isUse" clearable placeholder="请选择是否已用" style="width: 140px" class="filter-item" @change="handleFilter">
+            <el-option v-for="item in isUseOptions" :key="item.key" :label="item.label" :value="item.key" />
+          </el-select>
         </el-form-item>
         <el-form-item label="显示名" prop="itemName">
           <el-input v-model="temp.itemName" placeholder="请输入显示名" />
@@ -75,7 +71,9 @@
           <el-input v-model="temp.sortId" type="number" placeholder="请输入排序号" />
         </el-form-item>
         <el-form-item label="字典类型" prop="type">
-          <el-input v-model="temp.type" type="number" placeholder="请输入字典类型" />
+          <el-select v-model="temp.type" clearable placeholder="请选择字典类型" style="width: 140px" class="filter-item" @change="handleFilter">
+            <el-option v-for="item in typeOptions" :key="item.key" :label="item.label" :value="item.key" />
+          </el-select>
         </el-form-item>
         <el-form-item label="上一级ID">
           <el-input v-model="temp.parentId" placeholder="请输入上一级ID" />
@@ -96,7 +94,7 @@
 </template>
 
 <script>
-import { createDictionary, deleteDictionary, fetchList, updateDictionary } from '@/api/dictionary'
+import { createDictionary, deleteDictionary, fetchList, updateDictionary, getDictionary } from '@/api/dictionary'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 export default {
@@ -122,17 +120,26 @@ export default {
         parentId: undefined,
         sort: '+id'
       },
+      dictionary:{
+        appModule: undefined,
+        type: undefined
+      },
       importanceOptions: [1, 2, 3],
       // 格式化数据
       isUseOptions: [
-        { value: 'true', label: '已用' },
-        { value: 'false', label: '未用' }
+        { label: '已用', key: 'true' },
+        { label: '未用', key: 'false' }
       ],
-      // automaticOptions,
       sortOptions: [
         { label: 'ID 顺序排列', key: '+id' },
         { label: 'ID 倒序排列', key: '-id' }
       ],
+      typeOptions: [
+        { label: '顶级', key: 'TOP_LEVEL' },
+        { label: '一级', key: 'CLASS_A' },
+        { label: '二级', key: 'SECOND_LEVEL' }
+      ],
+
       showReviewer: false,
       temp: {
       },
@@ -153,7 +160,8 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.getList(),
+    this.getDictionary()
   },
   methods: {
     // 格式化表格数据
@@ -172,6 +180,12 @@ export default {
       } else {
         return '二级'
       }
+    },
+    getDictionary() {
+      getDictionary(this.dictionary).then((response) => {
+        this.dictionary.appModule = '字典'
+        this.dictionary.type = 'SECOND_LEVEL'
+      })
     },
     // 获取列表数据
     getList() {

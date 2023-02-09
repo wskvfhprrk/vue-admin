@@ -7,7 +7,6 @@ export function fetchList(query) {
     params: query
   })
 }
-
 export function createDictionary(data) {
   return request({
     url: '/dictionary',
@@ -28,5 +27,13 @@ export function deleteDictionary(id) {
   return request({
     url: '/dictionary/' + id,
     method: 'delete'
+  })
+}
+
+export function getDictionary(query) {
+  return request({
+    url: '/dictionary',
+    method: 'get',
+    params: query
   })
 }
