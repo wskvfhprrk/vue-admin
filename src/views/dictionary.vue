@@ -10,7 +10,9 @@
       <el-input v-model="listQuery.itemName" placeholder="显示名" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.itemValue" placeholder="存储值" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.sortId" placeholder="排序号" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.type" placeholder="字典类型" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.type" clearable placeholder="请选择字典类型" style="width: 140px" class="filter-item" @change="handleFilter">
+            <el-option v-for="item in typeOptions" :key="item.key" :label="item.label" :value="item.key" />
+          </el-select>
       <el-input v-model="listQuery.parentId" placeholder="上一级ID" style="width: 200px" clearable class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
@@ -57,7 +59,7 @@
           <el-input v-model="temp.description" placeholder="请输入描述说明" />
         </el-form-item>
         <el-form-item label="是否已用" prop="isUse">
-          <el-select v-model="temp.isUse" clearable placeholder="请选择是否已用" style="width: 140px" class="filter-item" @change="handleFilter">
+          <el-select v-model="temp.isUse" clearable placeholder="请选择是否已用" style="width: 140px" class="filter-item" >
             <el-option v-for="item in isUseOptions" :key="item.key" :label="item.label" :value="item.key" />
           </el-select>
         </el-form-item>
@@ -71,7 +73,7 @@
           <el-input v-model="temp.sortId" type="number" placeholder="请输入排序号" />
         </el-form-item>
         <el-form-item label="字典类型" prop="type">
-          <el-select v-model="temp.type" clearable placeholder="请选择字典类型" style="width: 140px" class="filter-item" @change="handleFilter">
+          <el-select v-model="temp.type" clearable placeholder="请选择字典类型" style="width: 140px" class="filter-item" >
             <el-option v-for="item in typeOptions" :key="item.key" :label="item.label" :value="item.key" />
           </el-select>
         </el-form-item>
@@ -119,6 +121,10 @@ export default {
         type: undefined,
         parentId: undefined,
         sort: '+id'
+      },
+      dictionaryQuery:{
+        appModule:'字典',
+        type:'SECOND_LEVEL'
       },
       dictionary:[],
       importanceOptions: [1, 2, 3],
@@ -178,10 +184,9 @@ export default {
         return '二级'
       }
     },
-    getDictionary() {
-      getDictionary(this.dictionary).then((response) => {
-        appModule = '字典'
-        type = 'SECOND_LEVEL'
+    getDictionary() {        
+      getDictionary(this.dictionaryQuery).then((response) => {
+        this.dictionary =response.data        
       })
     },
     // 获取列表数据
