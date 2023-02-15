@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { createCommandStatus, deleteCommandStatus, fetchList, updateCommandStatus } from '@/api/commandStatus'
+import { createCommandStatus, deleteCommandStatus, fetchList, updateCommandStatus } from '@/api/instructionDefinitionStatus'
 import Pagination from '@/components/Pagination' // 基于el分页的二级包
 
 // const calendarNoImeiOptions = [
